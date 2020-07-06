@@ -8,7 +8,8 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.MyApplicationService"/>
+        <applicationService
+                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.MyApplicationService"/>
         <projectService serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.MyProjectService"/>
     </extensions>
 
@@ -16,4 +17,11 @@
         <listener class="com.github.dmitrypogrebnoy.feedbacktest.listeners.MyProjectManagerListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </projectListeners>
+    <actions>
+        <action id="com.github.dmitrypogrebnoy.feedbacktest.action.HotKeyAction"
+                class="com.github.dmitrypogrebnoy.feedbacktest.action.HotKeyAction" text="Hot Key Action Notifier"
+                description="Test action">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt Q"/>
+        </action>
+    </actions>
 </idea-plugin>
