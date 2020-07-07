@@ -18,9 +18,10 @@
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </projectListeners>
     <actions>
-        <action id="com.github.dmitrypogrebnoy.feedbacktest.action.HotKeyAction"
-                class="com.github.dmitrypogrebnoy.feedbacktest.action.HotKeyAction" text="Hot Key Action Notifier"
-                description="Test action">
+        <action id="com.github.dmitrypogrebnoy.feedbacktest.action.FeedbackNotificationAction"
+                class="com.github.dmitrypogrebnoy.feedbacktest.action.FeedbackNotificationAction"
+                text="Feedback Notification"
+                description="Action for show feedback notification">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt Q"/>
         </action>
     </actions>
