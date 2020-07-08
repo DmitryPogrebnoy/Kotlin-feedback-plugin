@@ -10,6 +10,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService
                 serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.MyApplicationService"/>
+        <applicationService
+                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.StatisticPersistentStateService"/>
         <projectService serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.MyProjectService"/>
     </extensions>
 
