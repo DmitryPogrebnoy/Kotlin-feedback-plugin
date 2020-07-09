@@ -13,7 +13,14 @@
         <applicationService
                 serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.StatisticPersistentStateService"/>
         <projectService serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.MyProjectService"/>
+        <typedHandler implementation="com.github.dmitrypogrebnoy.feedbacktest.listeners.MyTypedHandler"/>
     </extensions>
+
+    <applicationListeners>
+
+        <listener class="com.github.dmitrypogrebnoy.feedbacktest.Registrator"
+                  topic="com.intellij.ide.AppLifecycleListener"/>
+    </applicationListeners>
 
     <projectListeners>
         <listener class="com.github.dmitrypogrebnoy.feedbacktest.listeners.MyProjectManagerListener"
@@ -25,6 +32,11 @@
                 text="Feedback Notification"
                 description="Action for show feedback notification">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt Q"/>
+        </action>
+        <action id="com.github.dmitrypogrebnoy.feedbacktest.action.StatisticPluginShow"
+                class="com.github.dmitrypogrebnoy.feedbacktest.action.StatisticPluginShow" text="StatisticPluginShow"
+                description="Shows statistics collected by the plugin">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt W"/>
         </action>
     </actions>
 </idea-plugin>
