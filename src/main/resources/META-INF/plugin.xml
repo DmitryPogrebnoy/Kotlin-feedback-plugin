@@ -6,26 +6,29 @@
     <!-- Product and plugin compatibility requirements -->
     <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.MyApplicationService"/>
+                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.TasksStatisticService"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.StatisticPersistentStateService"/>
-        <projectService serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.MyProjectService"/>
-        <typedHandler implementation="com.github.dmitrypogrebnoy.feedbacktest.listeners.MyTypedHandler"/>
+                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.EditorStatisticService"/>
+        <compiler.task execute="AFTER"
+                       implementation="com.github.dmitrypogrebnoy.feedbacktest.task.build.time.StartCompileTime"/>
+        <compiler.task execute="BEFORE"
+                       implementation="com.github.dmitrypogrebnoy.feedbacktest.task.build.time.FinishCompileTime"/>
+        <compiler.task execute="BEFORE"
+                       implementation="com.github.dmitrypogrebnoy.feedbacktest.task.build.CompileFeedbackNotification"/>
     </extensions>
 
     <applicationListeners>
-
-        <listener class="com.github.dmitrypogrebnoy.feedbacktest.Registrator"
-                  topic="com.intellij.ide.AppLifecycleListener"/>
+        <listener class="com.github.dmitrypogrebnoy.feedbacktest.listeners.VirtualFileListener"
+                  topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
     <projectListeners>
-        <listener class="com.github.dmitrypogrebnoy.feedbacktest.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </projectListeners>
+
     <actions>
         <action id="com.github.dmitrypogrebnoy.feedbacktest.action.FeedbackNotificationAction"
                 class="com.github.dmitrypogrebnoy.feedbacktest.action.FeedbackNotificationAction"

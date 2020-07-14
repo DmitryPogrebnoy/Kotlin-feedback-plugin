@@ -54,7 +54,7 @@ intellij {
 //  Plugin Dependencies:
 //  https://www.jetbrains.org/intellij/sdk/docs/basics/plugin_structure/plugin_dependencies.html
 //
-//  setPlugins("java")
+    setPlugins("java")
 }
 
 /*
@@ -82,6 +82,9 @@ tasks {
         getByName<KotlinCompile>(it) {
             kotlinOptions.jvmTarget = "1.8"
         }
+    }
+    withType<org.jetbrains.intellij.tasks.RunIdeTask> {
+        setJbrVersion("8u202b1483.24")
     }
 /*
     withType<Detekt> {

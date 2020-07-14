@@ -7,13 +7,14 @@ import javax.swing.JPanel
 
 class FeedbackDialog(project: Project) : DialogWrapper(project) {
 
+    val jpanel: JPanel = JPanel()
+
     init {
         super.init()
     }
 
     override fun createCenterPanel(): JComponent? {
         //Panel stub
-        val panel = JPanel()
-        return panel
+        return jpanel
     }
 }
