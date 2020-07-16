@@ -1,7 +1,8 @@
 package com.github.dmitrypogrebnoy.feedbacktest.action
 
-import com.github.dmitrypogrebnoy.feedbacktest.services.EditorStatisticService
+import com.github.dmitrypogrebnoy.feedbacktest.services.EditRelevantStatisticService
 import com.github.dmitrypogrebnoy.feedbacktest.services.TasksStatisticService
+import com.github.dmitrypogrebnoy.feedbacktest.state.editor.converter.EditorStatisticConverter
 import com.github.dmitrypogrebnoy.feedbacktest.state.task.converter.TasksStatisticConverter
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
@@ -13,7 +14,7 @@ import com.intellij.openapi.project.DumbAware
 class StatisticPluginShow : AnAction(), DumbAware {
 
     private val tasksStatisticService: TasksStatisticService = service()
-    private val editorStatisticService: EditorStatisticService = service()
+    private val editRelevantStatisticService: EditRelevantStatisticService = service()
     private val tasksStatisticConverter: TasksStatisticConverter = TasksStatisticConverter()
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -25,7 +26,7 @@ class StatisticPluginShow : AnAction(), DumbAware {
                                 tasksStatisticService.state!!.projectsTasksInfo
                         ) +
                         " <br> Count of Kotlin file editing - " +
-                        "${editorStatisticService.state!!.numberEditKotlinFile}<html>",
+                        "${EditorStatisticConverter().toString(editRelevantStatisticService.state!!.countEditKotlinFile)}<html>",
                 NotificationType.INFORMATION
         )
 

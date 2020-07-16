@@ -5,4 +5,4 @@ import com.intellij.util.xmlb.annotations.OptionTag
 
 data class TasksStatisticState(
         @OptionTag(converter = TasksStatisticConverter::class)
-        val projectsTasksInfo: MutableMap<ProjectTask, StatisticInfo> = mutableMapOf())
+        val projectsTasksInfo: MutableMap<ProjectTask, TaskStatisticInfo> = mutableMapOf())
