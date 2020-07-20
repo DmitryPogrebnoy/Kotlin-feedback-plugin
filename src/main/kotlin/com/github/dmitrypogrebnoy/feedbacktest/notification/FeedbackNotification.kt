@@ -1,5 +1,6 @@
 package com.github.dmitrypogrebnoy.feedbacktest.notification
 
+import com.github.dmitrypogrebnoy.feedbacktest.FeedbackBundle.message
 import com.github.dmitrypogrebnoy.feedbacktest.dialog.FeedbackDialog
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
@@ -10,11 +11,11 @@ class FeedbackNotification(private val project: Project) {
 
     private val feedbackNotification = Notification(
             "Feedback Notification",
-            "Help make Kotlin plugin better",
-            "Tell us about your experience.",
+            message("notification.title"),
+            message("notification.content"),
             NotificationType.INFORMATION
     ).addAction(
-            NotificationAction.createSimple("Submit Feedback") {
+            NotificationAction.createSimple(message("notification.action.submit")) {
                 val dialog = FeedbackDialog(project)
                 dialog.show()
             }

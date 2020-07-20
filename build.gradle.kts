@@ -40,6 +40,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     //detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.10.0")
+    //TODO:Remove dependency
+    implementation("com.sun.mail:javax.mail:1.6.2")
 }
 
 // Configure gradle-intellij-plugin plugin.

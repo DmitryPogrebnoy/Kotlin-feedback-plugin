@@ -9,6 +9,7 @@ class FeedbackNotificationAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
         FeedbackNotification(e.project!!).notificationNotify()
+        //HintManager.getInstance().showInformationHint()
     }
 
     override fun update(e: AnActionEvent) {
