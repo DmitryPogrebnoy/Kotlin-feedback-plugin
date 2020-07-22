@@ -1,5 +1,6 @@
 package com.github.dmitrypogrebnoy.feedbacktest.action
 
+import com.github.dmitrypogrebnoy.feedbacktest.services.DateFeedbackStatService
 import com.github.dmitrypogrebnoy.feedbacktest.services.EditRelevantStatisticService
 import com.github.dmitrypogrebnoy.feedbacktest.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.feedbacktest.state.editor.converter.EditorStatisticConverter
@@ -15,6 +16,7 @@ class StatisticPluginShow : AnAction(), DumbAware {
 
     private val tasksStatisticService: TasksStatisticService = service()
     private val editRelevantStatisticService: EditRelevantStatisticService = service()
+    private val dateFeedbackStatService: DateFeedbackStatService = service()
     private val tasksStatisticConverter: TasksStatisticConverter = TasksStatisticConverter()
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -26,7 +28,9 @@ class StatisticPluginShow : AnAction(), DumbAware {
                                 tasksStatisticService.state!!.projectsTasksInfo
                         ) +
                         " <br> Count of Kotlin file editing - " +
-                        "${EditorStatisticConverter().toString(editRelevantStatisticService.state!!.countEditKotlinFile)}<html>",
+                        "${EditorStatisticConverter().toString(editRelevantStatisticService.state!!.countEditKotlinFile)}" +
+                        "<br> ${dateFeedbackStatService.state!!.showFeedbackNotificationDate}" +
+                        "<br> ${dateFeedbackStatService.state!!.sendFeedbackDate}<html>",
                 NotificationType.INFORMATION
         )
 

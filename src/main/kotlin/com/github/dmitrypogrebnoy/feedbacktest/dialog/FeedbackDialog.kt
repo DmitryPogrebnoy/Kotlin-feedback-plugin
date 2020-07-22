@@ -1,102 +1,104 @@
 package com.github.dmitrypogrebnoy.feedbacktest.dialog
 
 import com.github.dmitrypogrebnoy.feedbacktest.FeedbackBundle.message
-import com.intellij.ide.ui.laf.darcula.ui.*
+import com.github.dmitrypogrebnoy.feedbacktest.services.DateFeedbackStatService
+import com.intellij.ide.ui.laf.darcula.ui.DarculaLabelUI
+import com.intellij.ide.ui.laf.darcula.ui.DarculaPanelUI
+import com.intellij.openapi.components.service
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.*
-import com.intellij.ui.DocumentAdapter
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.DialogWrapper
+import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.ui.EditorTextField
 import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.JBTextArea
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.layout.panel
 import java.awt.Dimension
 import java.awt.Font
 import java.awt.event.ActionEvent
 import java.io.File
 import java.io.IOException
+import java.time.LocalDate
 import java.util.*
-import java.util.function.Supplier
 import javax.mail.*
 import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 import javax.swing.AbstractAction
+import javax.swing.BorderFactory
 import javax.swing.JComponent
-import javax.swing.event.DocumentEvent
+import javax.swing.UIManager
 
 
 class FeedbackDialog(project: Project) : DialogWrapper(project) {
 
-    private val regularFont: Font = Font("Segoe UI", Font.PLAIN, 12)
+    companion object {
+        //25 MB in Byte
+        const val MAX_ATTACH_FILE_SIZE = 26214400
+    }
 
     private val titleLabel: JBLabel
     private val sectionLabel: JBLabel
     private val subjectLabel: JBLabel
     private val descriptionLabel: JBLabel
-    private val subjectTextField: JBTextField
-    private val descriptionTextArea: JBTextArea
+    private val subjectTextField: EditorTextField
+    private val descriptionTextArea: EditorTextField
     private val attachFileLabel: JBLabel
     private val attachFile: TextFieldWithBrowseButton
 
     private val feedbackDialogPanel: DialogPanel
 
-    private val textFieldListener: javax.swing.event.DocumentListener
+    private var isSuccessSendFeedback: Boolean
 
-    var isSuccessSendMail: Boolean
+    private val dateFeedbackStatService: DateFeedbackStatService = service()
 
     init {
-        isSuccessSendMail = true
         setFieldsDialog()
+
+        isSuccessSendFeedback = true
 
         titleLabel = JBLabel(message("dialog.content.title"))
         titleLabel.ui = DarculaLabelUI()
-        titleLabel.font = regularFont.deriveFont(Font.BOLD, 20F)
+        titleLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD, 20F)
 
         sectionLabel = JBLabel(message("dialog.content.section"))
         sectionLabel.ui = DarculaLabelUI()
-        sectionLabel.font = regularFont
+        sectionLabel.font = UIManager.getFont("Label.font")
 
         subjectLabel = JBLabel(message("dialog.content.subject"))
         subjectLabel.ui = DarculaLabelUI()
-        subjectLabel.font = regularFont.deriveFont(Font.BOLD)
+        subjectLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
 
-        subjectTextField = JBTextField()
-        subjectTextField.ui = DarculaTextFieldUI()
-        subjectTextField.font = regularFont
-        subjectTextField.border = DarculaTextBorder()
-        subjectTextField.preferredSize = Dimension(200, 20)
+        subjectTextField = EditorTextField()
+        subjectTextField.preferredSize = Dimension(700, 20)
         subjectLabel.labelFor = subjectTextField
 
         descriptionLabel = JBLabel(message("dialog.content.description.label"))
         descriptionLabel.ui = DarculaLabelUI()
-        descriptionLabel.font = regularFont.deriveFont(Font.BOLD)
+        descriptionLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
 
-        descriptionTextArea = JBTextArea()
-        descriptionTextArea.ui = DarculaTextAreaUI()
-        descriptionTextArea.font = regularFont
+        descriptionTextArea = EditorTextField(project, PlainTextFileType.INSTANCE)
+        descriptionTextArea.addSettingsProvider {
+            it.settings.isUseSoftWraps = true
+            it.setBorder(
+                    BorderFactory.createCompoundBorder(
+                            BorderFactory.createEmptyBorder(4, 4, 4, 0),
+                            descriptionTextArea.border)
+            )
+            it.setVerticalScrollbarVisible(true)
+        }
         descriptionTextArea.autoscrolls = true
-        descriptionTextArea.rows = 7
-        descriptionTextArea.preferredSize = Dimension(700, 50)
-        //TODO: Set margin - too difficult omg
-        // The text area gets out of the label for this reason:
-        // https://stackoverflow.com/questions/8792651/how-can-i-add-padding-to-a-jtextfield/8792905
-        /*
-        descriptionTextArea.border = BorderFactory.createCompoundBorder(
-                 descriptionTextArea.border, DarculaTextBorder()
-        )
-        //descriptionTextArea.margin = Insets(4, 6, 4, 6)
-        */
-        //descriptionTextArea.border = DarculaTextBorder()
-        descriptionTextArea.lineWrap = true
-        descriptionTextArea.wrapStyleWord = true
-        descriptionTextArea.emptyText.text = message("dialog.content.description.textarea.placeholder")
+        descriptionTextArea.setPlaceholder(message("dialog.content.description.textarea.placeholder"))
+        descriptionTextArea.setOneLineMode(false)
+        descriptionTextArea.preferredSize = Dimension(700, 200)
         descriptionLabel.labelFor = descriptionTextArea
 
         attachFileLabel = JBLabel(message("dialog.content.attachfile.label"))
         attachFileLabel.ui = DarculaLabelUI()
-        attachFileLabel.font = regularFont.deriveFont(Font.BOLD)
+        attachFileLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
 
         attachFile = TextFieldWithBrowseButton()
         attachFile.addBrowseFolderListener(
@@ -105,45 +107,9 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
                 project,
                 FileChooserDescriptorFactory.createMultipleFilesNoJarsDescriptor()
         )
+        attachFile.preferredSize = Dimension(700, 20)
 
-        //Add "file exists" validator to attach file
-        ComponentValidator(disposable).withValidator(
-                Supplier<ValidationInfo> {
-                    if (attachFile.text.isNotEmpty()) {
-                        val file = File(attachFile.text)
-                        if (!file.exists()) {
-                            ValidationInfo(message("dialog.validate.attachFile"), attachFile)
-                        } else {
-                            ValidationInfo("", null)
-                        }
-                    } else {
-                        ValidationInfo("", null)
-                    }
-                }).andStartOnFocusLost().installOn(attachFile)
-
-        attachFile.textField.document.addDocumentListener(object : DocumentAdapter() {
-            override fun textChanged(e: DocumentEvent) {
-                ComponentValidator.getInstance(attachFile).ifPresent { v: ComponentValidator -> v.revalidate() }
-            }
-        })
-
-        textFieldListener = object : javax.swing.event.DocumentListener {
-            override fun changedUpdate(e: DocumentEvent?) {
-                checkNotEmptyField()
-            }
-
-            override fun insertUpdate(e: DocumentEvent?) {
-                checkNotEmptyField()
-            }
-
-            override fun removeUpdate(e: DocumentEvent?) {
-                checkNotEmptyField()
-            }
-        }
-
-        subjectTextField.document.addDocumentListener(textFieldListener)
-        descriptionTextArea.document.addDocumentListener(textFieldListener)
-
+        //Create dialog panel
         feedbackDialogPanel = panel {
             row {
                 titleLabel()
@@ -156,10 +122,14 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
                     subjectLabel()
                     subjectTextField()
                 }
+            }
+            row {
                 cell(true, true) {
                     descriptionLabel()
                     descriptionTextArea()
                 }
+            }
+            row {
                 cell(true, true) {
                     attachFileLabel()
                     attachFile()
@@ -168,10 +138,11 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
         }
 
         feedbackDialogPanel.ui = DarculaPanelUI()
-        feedbackDialogPanel.font = regularFont
+        feedbackDialogPanel.font = UIManager.getFont("Label.font")
         feedbackDialogPanel.preferredFocusedComponent = subjectTextField
 
         super.init()
+        startTrackingValidation()
     }
 
     private fun setFieldsDialog() {
@@ -201,34 +172,30 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
                 try {
                     val message = MimeMessage(session)
                     val multipart: Multipart = MimeMultipart()
-                    val attachmentPart = MimeBodyPart()
                     val textPart = MimeBodyPart()
-                    try {
+                    textPart.setText(descriptionTextArea.text)
+                    multipart.addBodyPart(textPart)
+                    if (attachFile.text.isNotEmpty()) {
+                        val attachmentPart = MimeBodyPart()
                         val f = File(attachFile.text)
                         attachmentPart.attachFile(f)
-                        textPart.setText(descriptionTextArea.text)
-                        multipart.addBodyPart(textPart)
                         multipart.addBodyPart(attachmentPart)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
                     }
-
                     message.setContent(multipart)
                     message.setFrom(InternetAddress(from))
                     message.addRecipient(Message.RecipientType.TO, InternetAddress(to))
                     message.subject = subjectTextField.text
                     Transport.send(message)
-                    isSuccessSendMail = true
-                    startTrackingValidation()
-
-                } catch (mex: MessagingException) {
-                    isSuccessSendMail = false
-                    startTrackingValidation()
-                    checkNotEmptyField()
-                    mex.printStackTrace()
+                    isSuccessSendFeedback = true
+                } catch (e: IOException) {
+                    isSuccessSendFeedback = false
+                    e.printStackTrace()
                 }
 
                 if (doValidateAll().isEmpty()) {
+                    if (dateFeedbackStatService.state != null) {
+                        dateFeedbackStatService.state!!.sendFeedbackDate = LocalDate.now()
+                    }
                     close(OK_EXIT_CODE)
                 }
             }
@@ -242,22 +209,41 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
         return feedbackDialogPanel
     }
 
-    private fun checkNotEmptyField() {
-        isOKActionEnabled = subjectTextField.text.isNotEmpty() && descriptionTextArea.text.isNotEmpty()
-    }
-
     override fun doValidateAll(): MutableList<ValidationInfo> {
         val validationInfoList = mutableListOf<ValidationInfo>()
 
-        if (!isSuccessSendMail) {
-            validationInfoList.add(ValidationInfo(message("dialog.validate.all.exceptionSendMail")))
+        val validationAttachFile = checkAttachFile()
+        if (validationAttachFile != null) {
+            validationInfoList.add(validationAttachFile)
         }
 
-        val file = File(attachFile.text)
-        if (!file.exists()) {
-            validationInfoList.add(ValidationInfo(message("dialog.validate.all.attachFile")))
+        if (subjectTextField.text.isEmpty()) {
+            validationInfoList.add(ValidationInfo(message("dialog.validate.subject.empty"), subjectTextField))
+        }
+
+        if (descriptionTextArea.text.isEmpty()) {
+            validationInfoList.add(ValidationInfo(message("dialog.validate.description.empty"), descriptionTextArea))
+        }
+
+        if (!isSuccessSendFeedback) {
+            validationInfoList.add(ValidationInfo(message("dialog.validate.exceptionSendMail")))
         }
 
         return validationInfoList
+    }
+
+    private fun checkAttachFile(): ValidationInfo? {
+        if (attachFile.text.isNotEmpty()) {
+            val file = File(attachFile.text)
+            if (!file.exists()) {
+                return ValidationInfo(message("dialog.validate.attachFile.notExists"), attachFile)
+            } else {
+                val fileSize = file.length()
+                if (fileSize > MAX_ATTACH_FILE_SIZE) {
+                    return ValidationInfo(message("dialog.validate.attachFile.tooLarge"), attachFile)
+                }
+            }
+        }
+        return null
     }
 }
