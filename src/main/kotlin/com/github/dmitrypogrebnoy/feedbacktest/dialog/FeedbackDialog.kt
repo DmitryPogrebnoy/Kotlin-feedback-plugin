@@ -72,7 +72,7 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
         subjectLabel.ui = DarculaLabelUI()
         subjectLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
 
-        subjectTextField = EditorTextField()
+        subjectTextField = EditorTextField(project, PlainTextFileType.INSTANCE)
         subjectTextField.preferredSize = Dimension(700, 20)
         subjectLabel.labelFor = subjectTextField
 
@@ -96,14 +96,14 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
         descriptionTextArea.preferredSize = Dimension(700, 200)
         descriptionLabel.labelFor = descriptionTextArea
 
-        attachFileLabel = JBLabel(message("dialog.content.attachfile.label"))
+        attachFileLabel = JBLabel(message("dialog.content.attach.file.label"))
         attachFileLabel.ui = DarculaLabelUI()
         attachFileLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
 
         attachFile = TextFieldWithBrowseButton()
         attachFile.addBrowseFolderListener(
-                message("dialog.content.attachfile.title"),
-                message("dialog.content.attachfile.description"),
+                message("dialog.content.attach.file.title"),
+                message("dialog.content.attach.file.description"),
                 project,
                 FileChooserDescriptorFactory.createMultipleFilesNoJarsDescriptor()
         )
@@ -226,7 +226,7 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
         }
 
         if (!isSuccessSendFeedback) {
-            validationInfoList.add(ValidationInfo(message("dialog.validate.exceptionSendMail")))
+            validationInfoList.add(ValidationInfo(message("dialog.validate.exception.send.mail")))
         }
 
         return validationInfoList
@@ -236,11 +236,11 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
         if (attachFile.text.isNotEmpty()) {
             val file = File(attachFile.text)
             if (!file.exists()) {
-                return ValidationInfo(message("dialog.validate.attachFile.notExists"), attachFile)
+                return ValidationInfo(message("dialog.validate.attach.file.not.exists"), attachFile)
             } else {
                 val fileSize = file.length()
                 if (fileSize > MAX_ATTACH_FILE_SIZE) {
-                    return ValidationInfo(message("dialog.validate.attachFile.tooLarge"), attachFile)
+                    return ValidationInfo(message("dialog.validate.attach.file.too.large"), attachFile)
                 }
             }
         }

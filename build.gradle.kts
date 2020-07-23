@@ -1,4 +1,3 @@
-//import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.changelog.closure
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -12,10 +11,6 @@ plugins {
     id("org.jetbrains.intellij") version "0.4.21"
     // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
     id("org.jetbrains.changelog") version "0.3.2"
-    // detekt linter - read more: https://detekt.github.io/detekt/kotlindsl.html
-    //id("io.gitlab.arturbosch.detekt") version "1.10.0"
-    // ktlint linter - read more: https://github.com/JLLeitschuh/ktlint-gradle
-    //id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
 }
 
 // Import variables from gradle.properties file
@@ -39,7 +34,6 @@ repositories {
 }
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    //detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.10.0")
     //TODO:Remove dependency
     implementation("com.sun.mail:javax.mail:1.6.2")
 }
@@ -59,20 +53,6 @@ intellij {
     setPlugins("java")
 }
 
-/*
-// Configure detekt plugin.
-// Read more: https://detekt.github.io/detekt/kotlindsl.html
-detekt {
-    config = files("./detekt-config.yml")
-    buildUponDefaultConfig = true
-
-    reports {
-        html.enabled = false
-        xml.enabled = false
-        txt.enabled = false
-    }
-}
-*/
 
 tasks {
     // Set the compatibility versions to 1.8
@@ -88,11 +68,7 @@ tasks {
     withType<org.jetbrains.intellij.tasks.RunIdeTask> {
         setJbrVersion("8u202b1483.24")
     }
-/*
-    withType<Detekt> {
-        jvmTarget = "1.8"
-    }
-*/
+
     patchPluginXml {
         version(pluginVersion)
         sinceBuild(pluginSinceBuild)

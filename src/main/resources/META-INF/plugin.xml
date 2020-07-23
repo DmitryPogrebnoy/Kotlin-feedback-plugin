@@ -9,6 +9,10 @@
     <depends>com.intellij.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <statusBarWidgetFactory
+                id="feedbackWidget"
+                implementation="com.github.dmitrypogrebnoy.feedbacktest.widget.FeedbackStatusBarWidgetFactory"
+                order="after inspectionProfileWidget"/>
         <applicationService
                 serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.TasksStatisticService"/>
         <applicationService
