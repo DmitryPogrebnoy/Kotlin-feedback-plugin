@@ -1,7 +1,7 @@
 <idea-plugin>
-    <id>com.github.dmitrypogrebnoy.feedbacktest</id>
-    <name>feedback-test</name>
-    <vendor>dmitrypogrebnoy</vendor>
+    <id>com.github.dmitrypogrebnoy.kotlinFeedbackPlugin</id>
+    <name>Kotlin Feedback</name>
+    <vendor>Dmitry Pogrebnoy</vendor>
 
     <!-- Product and plugin compatibility requirements -->
     <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
@@ -11,30 +11,31 @@
     <extensions defaultExtensionNs="com.intellij">
         <statusBarWidgetFactory
                 id="feedbackWidget"
-                implementation="com.github.dmitrypogrebnoy.feedbacktest.widget.FeedbackStatusBarWidgetFactory"
+                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget.FeedbackStatusBarWidgetFactory"
                 order="after inspectionProfileWidget"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.TasksStatisticService"/>
+                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.EditRelevantStatisticService"/>
+                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditRelevantStatisticService"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.EditOldStatisticService"/>
+                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditOldStatisticService"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.feedbacktest.services.DateFeedbackStatService"/>
+                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService"/>
         <compiler.task execute="AFTER"
-                       implementation="com.github.dmitrypogrebnoy.feedbacktest.task.build.time.FinishCompileTime"/>
+                       implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.FinishCompileTime"/>
         <compiler.task execute="BEFORE"
-                       implementation="com.github.dmitrypogrebnoy.feedbacktest.task.build.time.StartCompileTime"/>
+                       implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.StartCompileTime"/>
         <compiler.task execute="BEFORE"
-                       implementation="com.github.dmitrypogrebnoy.feedbacktest.task.build.CompileFeedbackNotification"/>
+                       implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.CompileFeedbackNotification"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.dmitrypogrebnoy.feedbacktest.listeners.VirtualFileListener"
+        <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.VirtualFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
-        <listener class="com.github.dmitrypogrebnoy.feedbacktest.listeners.EditRelevantStatisticCleaner"
-                  topic="com.intellij.ide.AppLifecycleListener"/>
-        <listener class="com.github.dmitrypogrebnoy.feedbacktest.listeners.EditOldStatisticCleaner"
+        <listener
+                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.cleaners.EditRelevantStatisticCleaner"
+                topic="com.intellij.ide.AppLifecycleListener"/>
+        <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.cleaners.EditOldStatisticCleaner"
                   topic="com.intellij.ide.AppLifecycleListener"/>
     </applicationListeners>
 
@@ -42,14 +43,15 @@
     </projectListeners>
 
     <actions>
-        <action id="com.github.dmitrypogrebnoy.feedbacktest.action.FeedbackNotificationAction"
-                class="com.github.dmitrypogrebnoy.feedbacktest.action.FeedbackNotificationAction"
+        <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackNotificationAction"
+                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackNotificationAction"
                 text="Feedback Notification"
                 description="Action for show feedback notification">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt Q"/>
         </action>
-        <action id="com.github.dmitrypogrebnoy.feedbacktest.action.StatisticPluginShow"
-                class="com.github.dmitrypogrebnoy.feedbacktest.action.StatisticPluginShow" text="StatisticPluginShow"
+        <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.StatisticPluginShow"
+                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.StatisticPluginShow"
+                text="StatisticPluginShow"
                 description="Shows statistics collected by the plugin">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt W"/>
         </action>

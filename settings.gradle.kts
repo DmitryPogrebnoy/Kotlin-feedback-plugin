@@ -1,1 +1,1 @@
-rootProject.name = "feedback-test"
+rootProject.name = "Kotlin Feedback"
