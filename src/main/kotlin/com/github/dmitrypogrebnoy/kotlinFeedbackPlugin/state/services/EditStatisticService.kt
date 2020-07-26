@@ -1,20 +1,20 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services
 
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditRelevantState
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditState
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 
 @State(name = "EditRelevantState", reloadable = true, storages = [Storage("EditRelevantState.xml")])
-class EditRelevantStatisticService : PersistentStateComponent<EditRelevantState> {
+class EditStatisticService : PersistentStateComponent<EditState> {
 
-    private var state: EditRelevantState = EditRelevantState()
+    private var state: EditState = EditState()
 
-    override fun getState(): EditRelevantState? {
+    override fun getState(): EditState? {
         return state
     }
 
-    override fun loadState(stateLoaded: EditRelevantState) {
+    override fun loadState(stateLoaded: EditState) {
         state = stateLoaded
     }
 }

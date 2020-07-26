@@ -14,7 +14,7 @@ import javax.swing.Icon
 class FeedbackWidget(project: Project): EditorBasedWidget(project), StatusBarWidget.IconPresentation {
 
     companion object {
-        const val ID = "feedbackWidget"
+        const val ID = "KotlinFeedbackWidget"
     }
 
     override fun ID(): String {

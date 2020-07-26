@@ -1,8 +1,9 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.converter.EditorStatisticConverter
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditRelevantStatisticService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.converter.TasksStatisticConverter
 import com.intellij.notification.Notification
@@ -15,7 +16,7 @@ import com.intellij.openapi.project.DumbAware
 class StatisticPluginShow : AnAction(), DumbAware {
 
     private val tasksStatisticService: TasksStatisticService = service()
-    private val editRelevantStatisticService: EditRelevantStatisticService = service()
+    private val editRelevantStatisticService: EditStatisticService = service()
     private val dateFeedbackStatService: DateFeedbackStatService = service()
     private val tasksStatisticConverter: TasksStatisticConverter = TasksStatisticConverter()
 
@@ -23,7 +24,7 @@ class StatisticPluginShow : AnAction(), DumbAware {
         val notification = Notification(
                 "Show Statistic",
                 "Collected statistic",
-                "<html>Tasks info - " +
+                "<html>${LastActive.lastActive}<br>Tasks info - " +
                         tasksStatisticConverter.toString(
                                 tasksStatisticService.state!!.projectsTasksInfo
                         ) +

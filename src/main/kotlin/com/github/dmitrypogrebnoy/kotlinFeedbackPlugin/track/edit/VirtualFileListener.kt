@@ -1,7 +1,7 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditInfo
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditRelevantStatisticService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.openapi.vfs.VirtualFile
@@ -11,7 +11,7 @@ import java.time.LocalDate
 
 class VirtualFileListener : BulkFileListener {
 
-    private val editRelevantStatisticService = service<EditRelevantStatisticService>()
+    private val editRelevantStatisticService = service<EditStatisticService>()
 
     override fun after(events: MutableList<out VFileEvent>) {
         for (event in events) {

@@ -2,7 +2,7 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditInfo
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditRelevantStatisticService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.show.DateFeedbackState
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.MAKE_TASK_NAME
@@ -31,6 +31,9 @@ class CompileFeedbackNotification : CompileTask {
 
         // 5 times
         const val MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE = 5
+
+        // 10 days
+        const val RELEVANT_DAYS: Long = 10
 
         // 2 minutes
         const val MIN_DURATION_COMPILE_TASK = 2
@@ -61,10 +64,13 @@ class CompileFeedbackNotification : CompileTask {
     }
 
     private fun checkRelevantNumberEditing(): Boolean {
-        val editorState: Map<LocalDate, EditInfo> = service<EditRelevantStatisticService>().state?.countEditKotlinFile
+        val editorState: Map<LocalDate, EditInfo> = service<EditStatisticService>().state?.countEditKotlinFile
                 ?: return false
-        val numberRelevantEditKotlin = editorState.values.fold(0) { acc: Long, editInfo: EditInfo ->
-            acc + editInfo.numberEditing
+        val startRelevantDays = LocalDate.now().minusDays(RELEVANT_DAYS)
+        val numberRelevantEditKotlin = editorState.entries.fold(0) { acc: Long, entry: Map.Entry<LocalDate, EditInfo> ->
+            if (entry.key >= startRelevantDays && entry.key <= LocalDate.now()) {
+                acc + entry.value.numberEditing
+            } else acc
         }
         return numberRelevantEditKotlin > MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE
     }

@@ -10,15 +10,13 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <statusBarWidgetFactory
-                id="feedbackWidget"
+                id="KotlinFeedbackWidget"
                 implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget.FeedbackStatusBarWidgetFactory"
                 order="after inspectionProfileWidget"/>
         <applicationService
                 serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditRelevantStatisticService"/>
-        <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditOldStatisticService"/>
+                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService"/>
         <applicationService
                 serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService"/>
         <compiler.task execute="AFTER"
@@ -27,20 +25,18 @@
                        implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.StartCompileTime"/>
         <compiler.task execute="BEFORE"
                        implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.CompileFeedbackNotification"/>
+        <typedHandler
+                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.TrackEditorTypingEvent"/>
+        <editorFactoryMouseListener
+                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.TrackEditorMouseEvent"/>
+        <editorFactoryMouseMotionListener
+                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.TrackEditorMouseEvent"/>
     </extensions>
 
     <applicationListeners>
         <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.VirtualFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
-        <listener
-                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.cleaners.EditRelevantStatisticCleaner"
-                topic="com.intellij.ide.AppLifecycleListener"/>
-        <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.cleaners.EditOldStatisticCleaner"
-                  topic="com.intellij.ide.AppLifecycleListener"/>
     </applicationListeners>
-
-    <projectListeners>
-    </projectListeners>
 
     <actions>
         <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackNotificationAction"

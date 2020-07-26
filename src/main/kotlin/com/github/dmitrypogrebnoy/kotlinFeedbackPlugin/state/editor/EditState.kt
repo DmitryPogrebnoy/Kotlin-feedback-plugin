@@ -4,7 +4,7 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.converter.Ed
 import com.intellij.util.xmlb.annotations.OptionTag
 import java.time.LocalDate
 
-data class EditRelevantState(
+data class EditState(
         @OptionTag(converter = EditorStatisticConverter::class)
         var countEditKotlinFile: MutableMap<LocalDate, EditInfo> = mutableMapOf()
 )
