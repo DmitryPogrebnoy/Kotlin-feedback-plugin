@@ -7,7 +7,7 @@ import com.intellij.psi.PsiFile
 
 class TrackEditorTypingEvent : TypedHandlerDelegate() {
     override fun charTyped(c: Char, project: Project, editor: Editor, file: PsiFile): Result {
-        trackActive()
+        trackActive(project)
         return Result.CONTINUE
     }
 }

@@ -8,6 +8,8 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
 
+    <resource-bundle>messages.FeedbackMessages</resource-bundle>
+
     <extensions defaultExtensionNs="com.intellij">
         <statusBarWidgetFactory
                 id="KotlinFeedbackWidget"
@@ -34,7 +36,7 @@
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.VirtualFileListener"
+        <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.EditFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
@@ -50,6 +52,12 @@
                 text="StatisticPluginShow"
                 description="Shows statistics collected by the plugin">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt W"/>
+        </action>
+        <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackDialogAction"
+                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackDialogAction"
+                text="Share Kotlin Feedback"
+                description="Shows the Kotlin feedback dialog">
+            <add-to-group group-id="HelpMenu" anchor="after" relative-to-action="SendFeedback"/>
         </action>
     </actions>
 </idea-plugin>

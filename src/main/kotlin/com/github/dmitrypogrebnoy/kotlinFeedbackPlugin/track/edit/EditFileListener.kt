@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import java.time.LocalDate
 
-class VirtualFileListener : BulkFileListener {
+class EditFileListener : BulkFileListener {
 
     private val editRelevantStatisticService = service<EditStatisticService>()
 
@@ -17,9 +17,7 @@ class VirtualFileListener : BulkFileListener {
         for (event in events) {
             if (event.file != null) {
                 val virtualFile: VirtualFile = event.file!!
-                if (FileUtilRt.extensionEquals(virtualFile.path, "kt") ||
-                        FileUtilRt.extensionEquals(virtualFile.path, "kts") ||
-                        FileUtilRt.extensionEquals(virtualFile.path, "ktm")) {
+                if (FileUtilRt.extensionEquals(virtualFile.path, "kt")) {
                     val localDate = LocalDate.now()
                     if (editRelevantStatisticService.state!!.countEditKotlinFile[localDate] != null) {
                         editRelevantStatisticService.state!!.countEditKotlinFile[localDate] =
