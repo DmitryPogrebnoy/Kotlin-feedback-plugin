@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 class FeedbackNotificationAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
-        FeedbackNotification.showNotification(e.project!!)
+        FeedbackNotification(e.project!!).notificationNotify()
     }
 
     override fun update(e: AnActionEvent) {

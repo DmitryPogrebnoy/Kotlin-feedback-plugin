@@ -1,5 +1,8 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isIntellijIdeaEAP
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isKotlinPluginEAP
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isKotlinProject
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.converter.EditorStatisticConverter
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
@@ -24,14 +27,21 @@ class StatisticPluginShow : AnAction(), DumbAware {
         val notification = Notification(
                 "Show Statistic",
                 "Collected statistic",
-                "<html>${LastActive.lastActive}<br>Tasks info - " +
+                "<html>Last active time: ${LastActive.lastActive}<br>" +
+                        "Is Kotlin project: ${isKotlinProject(e.project!!)}<br>" +
+                        "Is EAP Intellij IDEA: ${isIntellijIdeaEAP()}<br>" +
+                        "Is EAP Kotlin plugin: ${isKotlinPluginEAP()}<br>" +
+                        " " +
+                        "Tasks info - " +
                         tasksStatisticConverter.toString(
                                 tasksStatisticService.state!!.projectsTasksInfo
-                        ) +
-                        " <br> Count of Kotlin file editing - " +
-                        "${EditorStatisticConverter().toString(editRelevantStatisticService.state!!.countEditKotlinFile)}" +
-                        "<br> ${dateFeedbackStatService.state!!.showFeedbackNotificationDate}" +
-                        "<br> ${dateFeedbackStatService.state!!.sendFeedbackDate}<html>",
+                        ) + "<br>" +
+                        "Count of Kotlin file editing - " +
+                        "${EditorStatisticConverter().toString(
+                                editRelevantStatisticService.state!!.countEditKotlinFile)}<br>" +
+                        "Last date for show feedback notification " +
+                        "${dateFeedbackStatService.state!!.showFeedbackNotificationDate}<br>" +
+                        "Last date for send feedback ${dateFeedbackStatService.state!!.sendFeedbackDate}<html>",
                 NotificationType.INFORMATION
         )
 

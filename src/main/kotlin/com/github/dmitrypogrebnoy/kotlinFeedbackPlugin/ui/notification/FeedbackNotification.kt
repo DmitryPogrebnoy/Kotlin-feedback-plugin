@@ -13,14 +13,6 @@ import java.time.LocalDate
 
 class FeedbackNotification(private val project: Project) {
 
-    companion object {
-        internal fun showNotification(project: Project) {
-            val dateFeedbackState: DateFeedbackState = service<DateFeedbackStatService>().state ?: return
-            FeedbackNotification(project).notificationNotify()
-            dateFeedbackState.showFeedbackNotificationDate = LocalDate.now()
-        }
-    }
-
     private val feedbackNotification = Notification(
             "Feedback Notification",
             message("notification.title"),
@@ -33,7 +25,9 @@ class FeedbackNotification(private val project: Project) {
             }
     )
 
-    private fun notificationNotify() {
+    fun notificationNotify() {
+        val dateFeedbackState: DateFeedbackState = service<DateFeedbackStatService>().state ?: return
         feedbackNotification.notify(project)
+        dateFeedbackState.showFeedbackNotificationDate = LocalDate.now()
     }
 }

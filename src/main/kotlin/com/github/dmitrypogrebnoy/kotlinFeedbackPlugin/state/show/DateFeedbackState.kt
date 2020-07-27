@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 data class DateFeedbackState(
         @OptionTag(converter = LocalDateConverter::class)
-        var sendFeedbackDate: LocalDate = LocalDate.MIN,
+        var sendFeedbackDate: LocalDate = LocalDate.now(),
         @OptionTag(converter = LocalDateConverter::class)
-        var showFeedbackNotificationDate: LocalDate = LocalDate.MIN
+        var showFeedbackNotificationDate: LocalDate = LocalDate.now()
 )

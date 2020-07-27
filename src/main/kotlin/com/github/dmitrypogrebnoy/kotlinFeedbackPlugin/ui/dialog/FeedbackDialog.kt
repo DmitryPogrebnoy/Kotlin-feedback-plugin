@@ -27,10 +27,7 @@ import javax.mail.internet.InternetAddress
 import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
-import javax.swing.AbstractAction
-import javax.swing.BorderFactory
-import javax.swing.JComponent
-import javax.swing.UIManager
+import javax.swing.*
 
 
 class FeedbackDialog(project: Project) : DialogWrapper(project) {
@@ -43,9 +40,9 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
     private val titleLabel: JBLabel
     private val sectionLabel: JBLabel
     private val subjectLabel: JBLabel
-    private val descriptionLabel: JBLabel
+    private val feedbackLabel: JBLabel
     private val subjectTextField: EditorTextField
-    private val descriptionTextArea: EditorTextField
+    private val feedbackTextArea: EditorTextField
     private val attachFileLabel: JBLabel
     private val attachFile: TextFieldWithBrowseButton
 
@@ -60,57 +57,103 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
 
         isSuccessSendFeedback = true
 
-        titleLabel = JBLabel(message("dialog.content.title"))
-        titleLabel.ui = DarculaLabelUI()
-        titleLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD, 20F)
-
-        sectionLabel = JBLabel(message("dialog.content.section"))
-        sectionLabel.ui = DarculaLabelUI()
-        sectionLabel.font = UIManager.getFont("Label.font")
-
-        subjectLabel = JBLabel(message("dialog.content.subject"))
-        subjectLabel.ui = DarculaLabelUI()
-        subjectLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
-
-        subjectTextField = EditorTextField(project, PlainTextFileType.INSTANCE)
-        subjectTextField.preferredSize = Dimension(700, 20)
+        titleLabel = createTitleLabel()
+        sectionLabel = createSectionLabel()
+        subjectLabel = createSubjectLabel()
+        subjectTextField = createSubjectTextField(project)
         subjectLabel.labelFor = subjectTextField
+        feedbackLabel = createFeedbackLabel()
+        feedbackTextArea = createFeedbackTextArea(project)
+        feedbackLabel.labelFor = feedbackTextArea
+        attachFileLabel = createAttachFileLabel()
+        attachFile = createAttachFileChooser(project)
 
-        descriptionLabel = JBLabel(message("dialog.content.description.label"))
-        descriptionLabel.ui = DarculaLabelUI()
-        descriptionLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
+        feedbackDialogPanel = createFeedbackDialogPanel()
 
-        descriptionTextArea = EditorTextField(project, PlainTextFileType.INSTANCE)
-        descriptionTextArea.addSettingsProvider {
-            it.settings.isUseSoftWraps = true
-            it.setBorder(
-                    BorderFactory.createCompoundBorder(
-                            BorderFactory.createEmptyBorder(4, 4, 4, 0),
-                            descriptionTextArea.border)
-            )
-            it.setVerticalScrollbarVisible(true)
+        super.init()
+        startTrackingValidation()
+    }
+
+    private fun setFieldsDialog() {
+        title = message("dialog.title")
+        myOKAction = createOkAction()
+        setOKButtonText(message("dialog.button.ok"))
+        isOKActionEnabled = false
+    }
+
+    private fun createTitleLabel(): JBLabel {
+        return JBLabel(message("dialog.content.title")).apply {
+            ui = DarculaLabelUI()
+            font = UIManager.getFont("Label.font").deriveFont(Font.BOLD, 20F)
         }
-        descriptionTextArea.autoscrolls = true
-        descriptionTextArea.setPlaceholder(message("dialog.content.description.textarea.placeholder"))
-        descriptionTextArea.setOneLineMode(false)
-        descriptionTextArea.preferredSize = Dimension(700, 200)
-        descriptionLabel.labelFor = descriptionTextArea
+    }
 
-        attachFileLabel = JBLabel(message("dialog.content.attach.file.label"))
-        attachFileLabel.ui = DarculaLabelUI()
-        attachFileLabel.font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
+    private fun createSectionLabel(): JBLabel {
+        return JBLabel(message("dialog.content.section")).apply {
+            ui = DarculaLabelUI()
+            font = UIManager.getFont("Label.font")
+        }
+    }
 
-        attachFile = TextFieldWithBrowseButton()
-        attachFile.addBrowseFolderListener(
-                message("dialog.content.attach.file.title"),
-                message("dialog.content.attach.file.description"),
-                project,
-                FileChooserDescriptorFactory.createMultipleFilesNoJarsDescriptor()
-        )
-        attachFile.preferredSize = Dimension(700, 20)
+    private fun createSubjectLabel(): JBLabel {
+        return JBLabel(message("dialog.content.subject")).apply {
+            ui = DarculaLabelUI()
+            font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
+        }
+    }
 
-        //Create dialog panel
-        feedbackDialogPanel = panel {
+    private fun createSubjectTextField(project: Project): EditorTextField {
+        return EditorTextField(project, PlainTextFileType.INSTANCE).apply {
+            preferredSize = Dimension(700, 20)
+        }
+    }
+
+    private fun createFeedbackLabel(): JBLabel {
+        return JBLabel(message("dialog.content.description.label")).apply {
+            ui = DarculaLabelUI()
+            font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
+        }
+    }
+
+    private fun createFeedbackTextArea(project: Project): EditorTextField {
+        return EditorTextField(project, PlainTextFileType.INSTANCE).apply {
+            addSettingsProvider {
+                it.settings.isUseSoftWraps = true
+                it.setBorder(
+                        BorderFactory.createCompoundBorder(
+                                BorderFactory.createEmptyBorder(4, 4, 4, 0),
+                                feedbackTextArea.border)
+                )
+                it.setVerticalScrollbarVisible(true)
+            }
+            autoscrolls = true
+            setPlaceholder(message("dialog.content.description.textarea.placeholder"))
+            setOneLineMode(false)
+            preferredSize = Dimension(700, 200)
+        }
+    }
+
+    private fun createAttachFileLabel(): JBLabel {
+        return JBLabel(message("dialog.content.attach.file.label")).apply {
+            ui = DarculaLabelUI()
+            font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
+        }
+    }
+
+    private fun createAttachFileChooser(project: Project): TextFieldWithBrowseButton {
+        return TextFieldWithBrowseButton().apply {
+            addBrowseFolderListener(
+                    message("dialog.content.attach.file.title"),
+                    message("dialog.content.attach.file.description"),
+                    project,
+                    FileChooserDescriptorFactory.createMultipleFilesNoJarsDescriptor()
+            )
+            preferredSize = Dimension(700, 20)
+        }
+    }
+
+    private fun createFeedbackDialogPanel(): DialogPanel {
+        val dialogPanel = panel {
             row {
                 titleLabel()
             }
@@ -125,8 +168,8 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
             }
             row {
                 cell(true, true) {
-                    descriptionLabel()
-                    descriptionTextArea()
+                    feedbackLabel()
+                    feedbackTextArea()
                 }
             }
             row {
@@ -137,18 +180,15 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
             }
         }
 
-        feedbackDialogPanel.ui = DarculaPanelUI()
-        feedbackDialogPanel.font = UIManager.getFont("Label.font")
-        feedbackDialogPanel.preferredFocusedComponent = subjectTextField
-
-        super.init()
-        startTrackingValidation()
+        return dialogPanel.apply {
+            ui = DarculaPanelUI()
+            font = UIManager.getFont("Label.font")
+            preferredFocusedComponent = subjectTextField
+        }
     }
 
-    private fun setFieldsDialog() {
-        title = message("dialog.title")
-
-        myOKAction = object : AbstractAction() {
+    private fun createOkAction(): Action {
+        return object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
                 //TODO:Remove email
                 val email = ""
@@ -173,7 +213,7 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
                     val message = MimeMessage(session)
                     val multipart: Multipart = MimeMultipart()
                     val textPart = MimeBodyPart()
-                    textPart.setText(descriptionTextArea.text)
+                    textPart.setText(feedbackTextArea.text)
                     multipart.addBodyPart(textPart)
                     if (attachFile.text.isNotEmpty()) {
                         val attachmentPart = MimeBodyPart()
@@ -200,9 +240,6 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
                 }
             }
         }
-
-        setOKButtonText(message("dialog.button.ok"))
-        isOKActionEnabled = false
     }
 
     override fun createCenterPanel(): JComponent? {
@@ -221,8 +258,8 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
             validationInfoList.add(ValidationInfo(message("dialog.validate.subject.empty"), subjectTextField))
         }
 
-        if (descriptionTextArea.text.isEmpty()) {
-            validationInfoList.add(ValidationInfo(message("dialog.validate.description.empty"), descriptionTextArea))
+        if (feedbackTextArea.text.isEmpty()) {
+            validationInfoList.add(ValidationInfo(message("dialog.validate.description.empty"), feedbackTextArea))
         }
 
         if (!isSuccessSendFeedback) {

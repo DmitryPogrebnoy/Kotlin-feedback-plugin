@@ -1,5 +1,6 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditInfo
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
@@ -14,6 +15,8 @@ import com.intellij.openapi.application.ex.ApplicationInfoEx
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
+import com.intellij.psi.search.FilenameIndex
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -36,7 +39,7 @@ internal const val RELEVANT_DAYS: Long = 10
 internal const val MIN_DURATION_COMPILE_TASK = 2
 
 // 20 minutes
-internal val INACTIVE_TIME: LocalDateTime = LocalDateTime.of(0, 0, 0, 0, 20)
+internal const val INACTIVE_TIME: Long = 20
 
 internal fun checkCompileTaskDuration(project: Project): Boolean {
     val taskStatisticState: TasksStatisticState = service<TasksStatisticService>().state
@@ -74,19 +77,30 @@ internal fun isKotlinPluginEAP(): Boolean {
 
 internal fun checkFeedbackDate(): Boolean {
     val dateFeedbackState: DateFeedbackState = service<DateFeedbackStatService>().state ?: return false
-    val dayFromLastSendFeedback = LocalDate.now().toEpochDay() - dateFeedbackState.sendFeedbackDate.toEpochDay()
-    val dayFromLastShowFeedbackNotification = LocalDate.now().toEpochDay() -
-            dateFeedbackState.showFeedbackNotificationDate.toEpochDay()
+    val dayFromLastSendFeedback = Duration.between(
+            LocalDate.now().atStartOfDay(),
+            dateFeedbackState.sendFeedbackDate.atStartOfDay()).toDays()
+    val dayFromLastShowFeedbackNotification = Duration.between(LocalDate.now().atStartOfDay(),
+            dateFeedbackState.showFeedbackNotificationDate.atStartOfDay()).toDays()
+
     return dayFromLastSendFeedback >= MIN_DAYS_SINCE_SEND_FEEDBACK &&
             dayFromLastShowFeedbackNotification >= MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION
 }
 
 internal fun checkLastActive(lastActiveDateTime: LocalDateTime): Boolean {
-    val timeDifference = LocalDateTime.now()
-    timeDifference.minusDays(lastActiveDateTime.dayOfYear.toLong())
-    timeDifference.minusHours(lastActiveDateTime.hour.toLong())
-    timeDifference.minusMinutes(lastActiveDateTime.minute.toLong())
-    timeDifference.minusSeconds(lastActiveDateTime.second.toLong())
-    timeDifference.minusNanos(lastActiveDateTime.nano.toLong())
-    return timeDifference > INACTIVE_TIME
+    return Duration.between(LocalDateTime.now(), lastActiveDateTime).toMinutes() >= INACTIVE_TIME
+}
+
+internal fun isKotlinProject(project: Project): Boolean {
+    return FilenameIndex.getAllFilesByExt(project, "kt").isNotEmpty()
+}
+
+internal fun canShowNotificationInCompileTime(project: Project): Boolean {
+    return isIntellijIdeaEAP() && checkRelevantNumberEditing() && checkCompileTaskDuration(project)
+            && isKotlinProject(project) && checkFeedbackDate()
+}
+
+internal fun canShowNotificationInInactiveTime(project: Project): Boolean {
+    return isIntellijIdeaEAP() && checkRelevantNumberEditing() && checkLastActive(LastActive.lastActive)
+            && isKotlinProject(project) && checkFeedbackDate()
 }

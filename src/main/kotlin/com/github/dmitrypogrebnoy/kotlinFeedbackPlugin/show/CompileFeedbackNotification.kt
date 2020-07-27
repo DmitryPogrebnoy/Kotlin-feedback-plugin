@@ -8,11 +8,8 @@ class CompileFeedbackNotification : CompileTask {
 
     override fun execute(context: CompileContext?): Boolean {
         if (context != null) {
-            if (checkCompileTaskDuration(context.project) && checkRelevantNumberEditing() &&
-                    //Set '!' for test          //Set '!' for test
-                    (!isIntellijIdeaEAP() || !isKotlinPluginEAP()) && checkFeedbackDate()
-            ) {
-                FeedbackNotification.showNotification(context.project)
+            if (canShowNotificationInCompileTime(context.project)) {
+                FeedbackNotification(context.project).notificationNotify()
             }
         }
         return true
