@@ -7,7 +7,7 @@ import com.intellij.util.xmlb.Converter
 
 class TasksStatisticConverter : Converter<MutableMap<ProjectTask, TaskStatisticInfo>>() {
     /*
-    Format: projectName1,taskName1=lastTime1;projectName2,taskName2=lastTim2;
+    Format: projectName1,taskName1=lastTime1;projectName2,taskName2=lastTime2;
      */
     override fun fromString(value: String): MutableMap<ProjectTask, TaskStatisticInfo>? {
         val listProjectsTasksInfo = value.split(';').dropLast(1)

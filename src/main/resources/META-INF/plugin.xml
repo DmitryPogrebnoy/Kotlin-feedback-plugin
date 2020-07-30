@@ -7,6 +7,7 @@
     <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
+    <depends optional="true" config-file="withGradle.xml">com.intellij.gradle</depends>
 
     <resource-bundle>messages.FeedbackMessages</resource-bundle>
 

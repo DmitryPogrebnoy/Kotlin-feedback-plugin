@@ -161,19 +161,19 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
                 sectionLabel()
             }
             row {
-                cell(true, true) {
+                cell(isVerticalFlow = true, isFullWidth = true) {
                     subjectLabel()
                     subjectTextField()
                 }
             }
             row {
-                cell(true, true) {
+                cell(isVerticalFlow = true, isFullWidth = true) {
                     feedbackLabel()
                     feedbackTextArea()
                 }
             }
             row {
-                cell(true, true) {
+                cell(isVerticalFlow = true, isFullWidth = true) {
                     attachFileLabel()
                     attachFile()
                 }

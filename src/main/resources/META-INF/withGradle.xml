@@ -1,0 +1,11 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
+        <taskManager
+                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.GradleTaskManager"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <externalSystemTaskNotificationListener
+                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.GradleTaskListener"/>
+    </extensions>
+</idea-plugin>

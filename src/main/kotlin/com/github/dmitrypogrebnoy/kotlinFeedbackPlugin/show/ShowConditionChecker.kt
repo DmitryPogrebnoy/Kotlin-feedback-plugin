@@ -6,9 +6,7 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedba
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.show.DateFeedbackState
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.MAKE_TASK_NAME
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.ProjectTask
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.TasksStatisticState
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.*
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.application.ex.ApplicationInfoEx
@@ -24,13 +22,13 @@ import java.time.LocalDateTime
 internal const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
 
 // 30 days
-internal const val MIN_DAYS_SINCE_SEND_FEEDBACK: Long = 30
+internal const val MIN_DAYS_SINCE_SEND_FEEDBACK: Long = 0
 
 // 5 days
-internal const val MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION: Long = 5
+internal const val MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION: Long = 0
 
 // 5 times
-internal const val MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE = 5
+internal const val MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE = 0
 
 // 10 days
 internal const val RELEVANT_DAYS: Long = 10
@@ -38,16 +36,49 @@ internal const val RELEVANT_DAYS: Long = 10
 // 2 minutes
 internal const val MIN_DURATION_COMPILE_TASK = 2
 
+// 2 minutes
+internal const val MIN_DURATION_GRADLE_TASK = 0
+
 // 20 minutes
 internal const val INACTIVE_TIME: Long = 20
 
-internal fun checkCompileTaskDuration(project: Project): Boolean {
+internal fun checkCompileTaskDuration(projectName: String): Boolean {
     val taskStatisticState: TasksStatisticState = service<TasksStatisticService>().state
             ?: return false
-    val curProjectTask = ProjectTask(project.name, MAKE_TASK_NAME)
+    val curProjectTask = ProjectTask(projectName, MAKE_TASK_NAME)
     return if (taskStatisticState.projectsTasksInfo.containsKey(curProjectTask)) {
         val statisticInfo = taskStatisticState.projectsTasksInfo[curProjectTask]!!
         statisticInfo.lastTaskDurationTime > MIN_DURATION_COMPILE_TASK
+    } else false
+}
+
+internal fun checkGradleExecuteTaskDuration(projectName: String, taskName: String): Boolean {
+    val taskStatisticState: TasksStatisticState = service<TasksStatisticService>().state
+            ?: return false
+    val curProjectTask = ProjectTask(projectName, taskName)
+    return if (taskStatisticState.projectsTasksInfo.containsKey(curProjectTask)) {
+        val statisticInfo = taskStatisticState.projectsTasksInfo[curProjectTask]!!
+        statisticInfo.lastTaskDurationTime > MIN_DURATION_GRADLE_TASK
+    } else false
+}
+
+internal fun checkGradleResolveTaskDuration(projectName: String): Boolean {
+    val taskStatisticState: TasksStatisticState = service<TasksStatisticService>().state
+            ?: return false
+    val curProjectTask = ProjectTask(projectName, GRADLE_RESOLVE_PROJECT)
+    return if (taskStatisticState.projectsTasksInfo.containsKey(curProjectTask)) {
+        val statisticInfo = taskStatisticState.projectsTasksInfo[curProjectTask]!!
+        statisticInfo.lastTaskDurationTime > MIN_DURATION_GRADLE_TASK
+    } else false
+}
+
+internal fun checkGradleRefreshTaskDuration(projectName: String): Boolean {
+    val taskStatisticState: TasksStatisticState = service<TasksStatisticService>().state
+            ?: return false
+    val curProjectTask = ProjectTask(projectName, GRADLE_REFRESH_TASKS_LISTS_PROJECT)
+    return if (taskStatisticState.projectsTasksInfo.containsKey(curProjectTask)) {
+        val statisticInfo = taskStatisticState.projectsTasksInfo[curProjectTask]!!
+        statisticInfo.lastTaskDurationTime > MIN_DURATION_GRADLE_TASK
     } else false
 }
 
@@ -96,7 +127,25 @@ internal fun isKotlinProject(project: Project): Boolean {
 }
 
 internal fun canShowNotificationInCompileTime(project: Project): Boolean {
-    return isIntellijIdeaEAP() && checkRelevantNumberEditing() && checkCompileTaskDuration(project)
+    return isIntellijIdeaEAP() && checkRelevantNumberEditing() && checkCompileTaskDuration(project.name)
+            && isKotlinProject(project) && checkFeedbackDate()
+}
+
+internal fun canShowNotificationInGradleExecuteTaskTime(project: Project, taskName: String): Boolean {
+    return isIntellijIdeaEAP() && checkRelevantNumberEditing()
+            && checkGradleExecuteTaskDuration(project.name, taskName)
+            && isKotlinProject(project) && checkFeedbackDate()
+}
+
+internal fun canShowNotificationInGradleRefreshTaskTime(project: Project): Boolean {
+    return isIntellijIdeaEAP() && checkRelevantNumberEditing()
+            && checkGradleRefreshTaskDuration(project.name)
+            && isKotlinProject(project) && checkFeedbackDate()
+}
+
+internal fun canShowNotificationInGradleResolveTaskTime(project: Project): Boolean {
+    return isIntellijIdeaEAP() && checkRelevantNumberEditing()
+            && checkGradleResolveTaskDuration(project.name)
             && isKotlinProject(project) && checkFeedbackDate()
 }
 

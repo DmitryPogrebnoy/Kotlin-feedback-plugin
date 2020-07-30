@@ -11,13 +11,19 @@ class FinishCompileTime : CompileTask {
     override fun execute(context: CompileContext?): Boolean {
         if (context != null) {
             val tasksStatisticState: TasksStatisticState = service<TasksStatisticService>().state!!
-            val projectTask = ProjectTask(context.project.name, MAKE_TASK_NAME)
+            val projectTask = IDEAProjectTask(context.project.name, MAKE_TASK_NAME)
 
-            if (TempTaskInfo.taskStartTime.contains(projectTask)) {
-                tasksStatisticState.projectsTasksInfo[projectTask] = TaskStatisticInfo(
-                        LocalTime.now().toSecondOfDay() - TempTaskInfo.taskStartTime[projectTask]!!
+            if (TempTaskInfo.ideaTasksStartTime.contains(projectTask)) {
+                tasksStatisticState.projectsTasksInfo[
+                        ProjectTask(
+                                projectTask.projectName,
+                                projectTask.taskName
+                        )
+                ] = TaskStatisticInfo(
+                        LocalTime.now().toSecondOfDay()
+                                - TempTaskInfo.ideaTasksStartTime[projectTask]!!
                 )
-                TempTaskInfo.taskStartTime[projectTask] = TASK_DEFAULT_START_TIME
+                TempTaskInfo.ideaTasksStartTime.remove(projectTask)
             }
         }
 
