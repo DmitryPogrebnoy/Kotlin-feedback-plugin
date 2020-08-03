@@ -1,6 +1,5 @@
-package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
+package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification
 
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.FeedbackNotification
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
@@ -8,7 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 class FeedbackNotificationAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
-        FeedbackNotification(e.project!!).notificationNotify()
+        FeedbackNotification(e.project!!).trackingNotify()
     }
 
     override fun update(e: AnActionEvent) {

@@ -21,6 +21,8 @@ import java.time.LocalDateTime
 
 internal const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
 
+internal const val EDU_TOOLS_PLUGIN_ID = "com.jetbrains.edu"
+
 // 30 days
 internal const val MIN_DAYS_SINCE_SEND_FEEDBACK: Long = 0
 
@@ -104,6 +106,17 @@ internal fun isKotlinPluginEAP(): Boolean {
     ) ?: return false
     return kotlinPluginDescriptor.version.contains("M")
             || kotlinPluginDescriptor.version.contains("eap")
+}
+
+internal fun isEduToolsInstalled(): Boolean {
+    return PluginManagerCore.getPlugin(PluginId.findId(EDU_TOOLS_PLUGIN_ID)) != null
+}
+
+internal fun isEduToolsEnabled(): Boolean {
+    val eduToolsPluginDescriptor: IdeaPluginDescriptor = PluginManagerCore.getPlugin(
+            PluginId.findId(EDU_TOOLS_PLUGIN_ID)
+    ) ?: return false
+    return eduToolsPluginDescriptor.isEnabled
 }
 
 internal fun checkFeedbackDate(): Boolean {

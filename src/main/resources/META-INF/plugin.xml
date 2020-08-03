@@ -34,7 +34,16 @@
                 implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.TrackEditorMouseEvent"/>
         <editorFactoryMouseMotionListener
                 implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.TrackEditorMouseEvent"/>
+        <notification.group groupId="Kotlin Feedback Notifications"/>
     </extensions>
+
+    <project-components>
+        <component>
+            <implementation-class>
+                com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.KotlinFeedbackNotificationGroup
+            </implementation-class>
+        </component>
+    </project-components>
 
     <applicationListeners>
         <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.EditFileListener"
@@ -42,8 +51,8 @@
     </applicationListeners>
 
     <actions>
-        <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackNotificationAction"
-                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackNotificationAction"
+        <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.FeedbackNotificationAction"
+                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.FeedbackNotificationAction"
                 text="Feedback Notification"
                 description="Action for show feedback notification">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt Q"/>

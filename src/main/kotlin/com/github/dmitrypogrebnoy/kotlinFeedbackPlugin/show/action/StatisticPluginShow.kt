@@ -1,5 +1,6 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isEduToolsInstalled
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isIntellijIdeaEAP
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isKotlinPluginEAP
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isKotlinProject
@@ -9,6 +10,7 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedba
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.converter.TasksStatisticConverter
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.KotlinFeedbackNotificationGroup
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
@@ -25,9 +27,9 @@ class StatisticPluginShow : AnAction(), DumbAware {
 
     override fun actionPerformed(e: AnActionEvent) {
         val notification = Notification(
-                "Show Statistic",
+                KotlinFeedbackNotificationGroup.group.displayId,
                 "Collected statistic",
-                "<html>Last active time: ${LastActive.lastActive}<br>" +
+                "<html>${isEduToolsInstalled()}Last active time: ${LastActive.lastActive}<br>" +
                         "Is Kotlin project: ${isKotlinProject(e.project!!)}<br>" +
                         "Is EAP Intellij IDEA: ${isIntellijIdeaEAP()}<br>" +
                         "Is EAP Kotlin plugin: ${isKotlinPluginEAP()}<br>" +

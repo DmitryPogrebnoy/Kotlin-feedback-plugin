@@ -103,13 +103,13 @@ class GradleTaskListener : ExternalSystemTaskNotificationListener {
 
     private fun showNotificationInGradleResolveTaskTime(project: Project) {
         if (canShowNotificationInGradleResolveTaskTime(project)) {
-            FeedbackNotification(project).notificationNotify()
+            FeedbackNotification(project).trackingNotify()
         }
     }
 
     private fun showNotificationInGradleRefreshTaskTime(project: Project) {
         if (canShowNotificationInGradleRefreshTaskTime(project)) {
-            FeedbackNotification(project).notificationNotify()
+            FeedbackNotification(project).trackingNotify()
         }
     }
 

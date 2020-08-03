@@ -9,7 +9,7 @@ class CompileFeedbackNotification : CompileTask {
     override fun execute(context: CompileContext?): Boolean {
         if (context != null) {
             if (canShowNotificationInCompileTime(context.project)) {
-                FeedbackNotification(context.project).notificationNotify()
+                FeedbackNotification(context.project).trackingNotify()
             }
         }
         return true

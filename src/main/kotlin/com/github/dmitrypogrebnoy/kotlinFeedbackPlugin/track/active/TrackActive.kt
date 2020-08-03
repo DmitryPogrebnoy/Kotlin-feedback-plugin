@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 internal fun trackActive(project: Project) {
     if (canShowNotificationInInactiveTime(project)) {
-        FeedbackNotification(project).notificationNotify()
+        FeedbackNotification(project).trackingNotify()
     }
     LastActive.lastActive = LocalDateTime.now()
 }

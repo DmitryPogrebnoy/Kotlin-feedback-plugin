@@ -14,18 +14,18 @@ import java.time.LocalDate
 class FeedbackNotification(private val project: Project) {
 
     private val feedbackNotification = Notification(
-            "Feedback Notification",
-            message("notification.title"),
-            message("notification.content"),
+            KotlinFeedbackNotificationGroup.group.displayId,
+            message("request.feedback.notification.title"),
+            message("request.feedback.notification.content"),
             NotificationType.INFORMATION
     ).addAction(
-            NotificationAction.createSimple(message("notification.action.submit")) {
+            NotificationAction.createSimple(message("request.feedback.notification.action.submit")) {
                 val dialog = FeedbackDialog(project)
                 dialog.show()
             }
     )
 
-    fun notificationNotify() {
+    fun trackingNotify() {
         val dateFeedbackState: DateFeedbackState = service<DateFeedbackStatService>().state ?: return
         feedbackNotification.notify(project)
         dateFeedbackState.showFeedbackNotificationDate = LocalDate.now()

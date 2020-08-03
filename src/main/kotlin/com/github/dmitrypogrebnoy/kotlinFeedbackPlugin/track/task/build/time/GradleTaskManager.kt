@@ -48,7 +48,7 @@ class GradleTaskManager : GradleTaskManagerExtension {
 
     private fun showFeedbackNotification(project: Project, taskName: String) {
         if (canShowNotificationInGradleExecuteTaskTime(project, taskName)) {
-            FeedbackNotification(project).notificationNotify()
+            FeedbackNotification(project).trackingNotify()
         }
     }
 }

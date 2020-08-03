@@ -1,7 +1,9 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle.message
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.send.FeedbackSender
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
 import com.intellij.ide.ui.laf.darcula.ui.DarculaLabelUI
 import com.intellij.ide.ui.laf.darcula.ui.DarculaPanelUI
 import com.intellij.openapi.components.service
@@ -21,21 +23,10 @@ import java.awt.event.ActionEvent
 import java.io.File
 import java.io.IOException
 import java.time.LocalDate
-import java.util.*
-import javax.mail.*
-import javax.mail.internet.InternetAddress
-import javax.mail.internet.MimeBodyPart
-import javax.mail.internet.MimeMessage
-import javax.mail.internet.MimeMultipart
 import javax.swing.*
 
 
-class FeedbackDialog(project: Project) : DialogWrapper(project) {
-
-    companion object {
-        //25 MB in Byte
-        const val MAX_ATTACH_FILE_SIZE = 26214400
-    }
+class FeedbackDialog(private val project: Project) : DialogWrapper(project) {
 
     private val titleLabel: JBLabel
     private val sectionLabel: JBLabel
@@ -45,18 +36,12 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
     private val feedbackTextArea: EditorTextField
     private val attachFileLabel: JBLabel
     private val attachFile: TextFieldWithBrowseButton
-
     private val feedbackDialogPanel: DialogPanel
-
-    private var isSuccessSendFeedback: Boolean
-
     private val dateFeedbackStatService: DateFeedbackStatService = service()
+    private val successSendFeedbackNotification: SuccessSendFeedbackNotification
 
     init {
         setFieldsDialog()
-
-        isSuccessSendFeedback = true
-
         titleLabel = createTitleLabel()
         sectionLabel = createSectionLabel()
         subjectLabel = createSubjectLabel()
@@ -69,6 +54,8 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
         attachFile = createAttachFileChooser(project)
 
         feedbackDialogPanel = createFeedbackDialogPanel()
+
+        successSendFeedbackNotification = SuccessSendFeedbackNotification(project)
 
         super.init()
         startTrackingValidation()
@@ -190,53 +177,26 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
     private fun createOkAction(): Action {
         return object : AbstractAction() {
             override fun actionPerformed(e: ActionEvent?) {
-                //TODO:Remove email
-                val email = ""
-                val to: String = email
-                val from: String = email
-                val host = "smtp.gmail.com"
-                val properties: Properties = System.getProperties()
-                properties["mail.smtp.host"] = host
-                properties["mail.smtp.port"] = "465"
-                properties["mail.smtp.ssl.enable"] = "true"
-                properties["mail.smtp.auth"] = "true"
-                val session: Session = Session.getInstance(properties, object : Authenticator() {
-                    override fun getPasswordAuthentication(): PasswordAuthentication {
-                        //TODO:Remove email and password
-                        return PasswordAuthentication("", "")
-                    }
-                })
-
-                session.debug = true
-
-                try {
-                    val message = MimeMessage(session)
-                    val multipart: Multipart = MimeMultipart()
-                    val textPart = MimeBodyPart()
-                    textPart.setText(feedbackTextArea.text)
-                    multipart.addBodyPart(textPart)
-                    if (attachFile.text.isNotEmpty()) {
-                        val attachmentPart = MimeBodyPart()
-                        val f = File(attachFile.text)
-                        attachmentPart.attachFile(f)
-                        multipart.addBodyPart(attachmentPart)
-                    }
-                    message.setContent(multipart)
-                    message.setFrom(InternetAddress(from))
-                    message.addRecipient(Message.RecipientType.TO, InternetAddress(to))
-                    message.subject = subjectTextField.text
-                    Transport.send(message)
-                    isSuccessSendFeedback = true
-                } catch (e: IOException) {
-                    isSuccessSendFeedback = false
-                    e.printStackTrace()
-                }
-
+                //first close window
                 if (doValidateAll().isEmpty()) {
                     if (dateFeedbackStatService.state != null) {
                         dateFeedbackStatService.state!!.sendFeedbackDate = LocalDate.now()
                     }
                     close(OK_EXIT_CODE)
+                    SuccessSendFeedbackNotification(project).justNotify()
+                }
+
+                //then try to send feedback
+                try {
+                    val newIssueId = FeedbackSender.createFeedbackIssue(subjectTextField.text, feedbackTextArea.text)
+                    if (attachFile.text.isNotEmpty()) {
+                        val file = File(attachFile.text)
+                        FeedbackSender.attachFileToIssue(newIssueId, file)
+                    }
+                } catch (e: IOException) {
+                    //TODO: Implement send feedback later if exception is occurred
+                    println(e.message)
+                    e.printStackTrace()
                 }
             }
         }
@@ -262,10 +222,6 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
             validationInfoList.add(ValidationInfo(message("dialog.validate.description.empty"), feedbackTextArea))
         }
 
-        if (!isSuccessSendFeedback) {
-            validationInfoList.add(ValidationInfo(message("dialog.validate.exception.send.mail")))
-        }
-
         return validationInfoList
     }
 
@@ -276,7 +232,7 @@ class FeedbackDialog(project: Project) : DialogWrapper(project) {
                 return ValidationInfo(message("dialog.validate.attach.file.not.exists"), attachFile)
             } else {
                 val fileSize = file.length()
-                if (fileSize > MAX_ATTACH_FILE_SIZE) {
+                if (fileSize > FeedbackSender.attachFileMaxSize) {
                     return ValidationInfo(message("dialog.validate.attach.file.too.large"), attachFile)
                 }
             }
