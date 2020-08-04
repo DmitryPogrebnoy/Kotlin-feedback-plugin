@@ -1,32 +1,22 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.converter
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditInfo
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.intellij.util.xmlb.Converter
+import java.lang.reflect.Type
 import java.time.LocalDate
 
 class EditorStatisticConverter : Converter<MutableMap<LocalDate, EditInfo>>() {
-    /*
-    Format: yyyy1-mm1-dd1=editInfo1;yyyy2-mm2-dd2=editInfo2;
-    */
+
+    private val gson = GsonBuilder().enableComplexMapKeySerialization().create()
 
     override fun fromString(value: String): MutableMap<LocalDate, EditInfo>? {
-        val listDateEditStatistic = value.split(';').dropLast(1)
-        val editorStatistic: MutableMap<LocalDate, EditInfo> = mutableMapOf()
-        for (item in listDateEditStatistic) {
-            val splitItem = item.split("=")
-            val localDate = LocalDate.parse(splitItem[0])
-            editorStatistic[localDate] = EditInfo(splitItem[1].toLong())
-        }
-        return editorStatistic
+        val type: Type = object : TypeToken<MutableMap<LocalDate, EditInfo>?>() {}.type
+        return gson.fromJson(value, type)
     }
 
     override fun toString(value: MutableMap<LocalDate, EditInfo>): String? {
-        val stringBuilder = StringBuilder()
-        for (entry in value.entries) {
-            stringBuilder.append(
-                    "${entry.key}=${entry.value.numberEditing};"
-            )
-        }
-        return stringBuilder.toString()
+        return gson.toJson(value)
     }
 }

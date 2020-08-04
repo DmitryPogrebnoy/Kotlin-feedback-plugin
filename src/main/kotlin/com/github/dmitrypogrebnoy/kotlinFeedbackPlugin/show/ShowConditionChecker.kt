@@ -4,6 +4,7 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditInfo
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.show.DateFeedbackState
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.*
@@ -13,6 +14,7 @@ import com.intellij.openapi.application.ex.ApplicationInfoEx
 import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.psi.search.FilenameIndex
 import java.time.Duration
 import java.time.LocalDate
@@ -43,6 +45,11 @@ internal const val MIN_DURATION_GRADLE_TASK = 0
 
 // 20 minutes
 internal const val INACTIVE_TIME: Long = 20
+
+// 7 days
+internal const val RECENT_PROJECT_DAYS: Long = 7
+
+internal const val RECENT_KOTLIN_PROJECT_WITHOUT_VCS = 3
 
 internal fun checkCompileTaskDuration(projectName: String): Boolean {
     val taskStatisticState: TasksStatisticState = service<TasksStatisticService>().state
@@ -100,6 +107,17 @@ internal fun isIntellijIdeaEAP(): Boolean {
     return ApplicationInfoEx.getInstanceEx().isEAP
 }
 
+internal fun isKotlinPluginInstalled(): Boolean {
+    return PluginManagerCore.getPlugin(PluginId.findId(KOTLIN_PLUGIN_ID)) != null
+}
+
+internal fun isKotlinPluginEnabled(): Boolean {
+    val kotlinPluginDescriptor: IdeaPluginDescriptor = PluginManagerCore.getPlugin(
+            PluginId.findId(KOTLIN_PLUGIN_ID)
+    ) ?: return false
+    return kotlinPluginDescriptor.isEnabled
+}
+
 internal fun isKotlinPluginEAP(): Boolean {
     val kotlinPluginDescriptor: IdeaPluginDescriptor = PluginManagerCore.getPlugin(
             PluginId.findId(KOTLIN_PLUGIN_ID)
@@ -108,15 +126,19 @@ internal fun isKotlinPluginEAP(): Boolean {
             || kotlinPluginDescriptor.version.contains("eap")
 }
 
-internal fun isEduToolsInstalled(): Boolean {
+internal fun isEduToolsPluginInstalled(): Boolean {
     return PluginManagerCore.getPlugin(PluginId.findId(EDU_TOOLS_PLUGIN_ID)) != null
 }
 
-internal fun isEduToolsEnabled(): Boolean {
+internal fun isEduToolsPluginEnabled(): Boolean {
     val eduToolsPluginDescriptor: IdeaPluginDescriptor = PluginManagerCore.getPlugin(
             PluginId.findId(EDU_TOOLS_PLUGIN_ID)
     ) ?: return false
     return eduToolsPluginDescriptor.isEnabled
+}
+
+internal fun hasVcs(project: Project): Boolean {
+    return ProjectLevelVcsManager.getInstance(project).hasActiveVcss()
 }
 
 internal fun checkFeedbackDate(): Boolean {
@@ -129,6 +151,16 @@ internal fun checkFeedbackDate(): Boolean {
 
     return dayFromLastSendFeedback >= MIN_DAYS_SINCE_SEND_FEEDBACK &&
             dayFromLastShowFeedbackNotification >= MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION
+}
+
+internal fun openedManyRecentProjectsWithoutVcs(): Boolean {
+    val projectsStatisticService: ProjectsStatisticService = service()
+    val state = projectsStatisticService.state ?: return false
+    val recentProjectsState = state.projectsStatisticState.filter {
+        it.value.lastOpenDate > LocalDate.now().minusDays(RECENT_PROJECT_DAYS)
+                && it.value.hasKotlinFiles && !it.value.hasVcs
+    }
+    return recentProjectsState.size >= RECENT_KOTLIN_PROJECT_WITHOUT_VCS
 }
 
 internal fun checkLastActive(lastActiveDateTime: LocalDateTime): Boolean {

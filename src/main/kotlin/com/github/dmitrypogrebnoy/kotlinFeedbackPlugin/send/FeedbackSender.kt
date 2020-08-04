@@ -39,7 +39,7 @@ object FeedbackSender {
         httpClient.params.setParameter(HttpConnectionParams.SO_TIMEOUT, socketTimeout)
     }
 
-    //return created issue id or throw exception ioexception
+    //Returns the created issue id or throws an IOException
     fun createFeedbackIssue(subject: String, description: String): String {
         val createIssueMethod = PostMethod("$repositoryApiUrl/issues")
         createIssueMethod.addRequestHeader(Header("Accept", "application/json"))
@@ -61,7 +61,9 @@ object FeedbackSender {
             val statusCode = httpClient.executeMethod(createIssueMethod)
             val responseBody = createIssueMethod.responseBodyAsStream.reader().readText()
             if (statusCode != HttpStatus.SC_OK) {
-                throw IOException("Error creating issue: $responseBody")
+                val errorResponse = JsonParser.parseString(responseBody).asJsonObject
+                throw IOException("Error creating issue: ${errorResponse["error"]}," +
+                        " ${errorResponse["error_description"]}")
             }
             val responseBodyJson = JsonParser.parseString(responseBody).asJsonObject
             createIssueMethod.releaseConnection()
@@ -71,7 +73,7 @@ object FeedbackSender {
         }
     }
 
-    //return attached file id or throw exception
+    //Returns the attached file id or throws an IOException
     fun attachFileToIssue(issueId: String, file: File): String {
         val attachFileMethod = PostMethod("$repositoryApiUrl/issues/${issueId}/attachments?fields=id")
         attachFileMethod.addRequestHeader(Header("Accept", "application/json"))
@@ -83,7 +85,9 @@ object FeedbackSender {
             val statusCode = httpClient.executeMethod(attachFileMethod)
             val responseBody = attachFileMethod.responseBodyAsStream.reader().readText()
             if (statusCode != HttpStatus.SC_OK) {
-                throw IOException("Error attaching file to issue: $responseBody")
+                val errorResponse = JsonParser.parseString(responseBody).asJsonObject
+                throw IOException("Error attaching file to issue: ${errorResponse["error"]}," +
+                        " ${errorResponse["error_description"]}")
             }
             val responseBodyJson = JsonParser.parseString(responseBody).asJsonArray
             attachFileMethod.releaseConnection()

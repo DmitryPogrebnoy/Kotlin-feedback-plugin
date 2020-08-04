@@ -22,6 +22,8 @@
                 serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService"/>
         <applicationService
                 serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService"/>
+        <applicationService
+                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService"/>
         <compiler.task execute="AFTER"
                        implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.FinishCompileTime"/>
         <compiler.task execute="BEFORE"
@@ -49,6 +51,11 @@
         <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.EditFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
+
+    <projectListeners>
+        <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.project.TrackOpenedProjectInfo"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </projectListeners>
 
     <actions>
         <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.FeedbackNotificationAction"
