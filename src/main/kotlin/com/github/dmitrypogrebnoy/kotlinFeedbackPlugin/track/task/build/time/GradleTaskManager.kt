@@ -1,14 +1,12 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time
 
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.canShowNotificationInGradleExecuteTaskTime
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.showGradleExecuteTaskTimeNotificationIfPossible
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.GRADLE_TASKS_FOR_TRACK
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.GradleProjectTask
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.GradleTaskTempInfo
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.TempTaskInfo
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.FeedbackNotification
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener
-import com.intellij.openapi.project.Project
 import org.jetbrains.plugins.gradle.service.task.GradleTaskManagerExtension
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import java.time.LocalTime
@@ -27,7 +25,7 @@ class GradleTaskManager : GradleTaskManagerExtension {
         if (taskNames.size == 1 && GRADLE_TASKS_FOR_TRACK.contains(taskNames[0])) {
             val project = id.findProject() ?: return false
 
-            showFeedbackNotification(project, taskNames[0])
+            showGradleExecuteTaskTimeNotificationIfPossible(project, taskNames[0])
 
             TempTaskInfo.gradleExecuteTasksStartInfo[
                     GradleProjectTask(
@@ -44,11 +42,5 @@ class GradleTaskManager : GradleTaskManagerExtension {
     override fun cancelTask(id: ExternalSystemTaskId, listener: ExternalSystemTaskNotificationListener): Boolean {
         //should return true, else error
         return true
-    }
-
-    private fun showFeedbackNotification(project: Project, taskName: String) {
-        if (canShowNotificationInGradleExecuteTaskTime(project, taskName)) {
-            FeedbackNotification(project).trackingNotify()
-        }
     }
 }

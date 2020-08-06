@@ -1,10 +1,9 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time
 
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.canShowNotificationInGradleRefreshTaskTime
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.canShowNotificationInGradleResolveTaskTime
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.showGradleRefreshTaskTimeNotificationIfPossible
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.showGradleResolveTaskTimeNotificationIfPossible
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.*
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.FeedbackNotification
 import com.intellij.openapi.components.service
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationEvent
@@ -85,7 +84,7 @@ class GradleTaskListener : ExternalSystemTaskNotificationListener {
                     val project = id.findProject() ?: return
 
                     //show feedback notification if all condition true
-                    showNotificationInGradleRefreshTaskTime(project)
+                    showGradleRefreshTaskTimeNotificationIfPossible(project)
 
                     TempTaskInfo.gradleResolveProjectTasksStartTime[project.name] = LocalTime.now().toSecondOfDay()
                 }
@@ -93,23 +92,11 @@ class GradleTaskListener : ExternalSystemTaskNotificationListener {
                     val project = id.findProject() ?: return
 
                     //show feedback notification if all condition true
-                    showNotificationInGradleResolveTaskTime(project)
+                    showGradleResolveTaskTimeNotificationIfPossible(project)
 
                     TempTaskInfo.gradleRefreshTaskListsTasksStartTime[project.name] = LocalTime.now().toSecondOfDay()
                 }
             }
-        }
-    }
-
-    private fun showNotificationInGradleResolveTaskTime(project: Project) {
-        if (canShowNotificationInGradleResolveTaskTime(project)) {
-            FeedbackNotification(project).trackingNotify()
-        }
-    }
-
-    private fun showNotificationInGradleRefreshTaskTime(project: Project) {
-        if (canShowNotificationInGradleRefreshTaskTime(project)) {
-            FeedbackNotification(project).trackingNotify()
         }
     }
 

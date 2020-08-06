@@ -1,19 +1,13 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
 
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isIntellijIdeaEAP
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isKotlinPluginEAP
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.isKotlinProject
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.converter.TasksStatisticConverter
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.KotlinFeedbackNotificationGroup
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.ActiveUserType
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
@@ -27,16 +21,18 @@ class StatisticPluginShow : AnAction(), DumbAware {
     private val projectsStatisticService: ProjectsStatisticService = service()
     private val tasksStatisticConverter: TasksStatisticConverter = TasksStatisticConverter()
     private val gsonPrettyPrinter: Gson = GsonBuilder().disableHtmlEscaping()
-            .enableComplexMapKeySerialization().create()
+            .enableComplexMapKeySerialization().setPrettyPrinting().create()
 
 
     override fun actionPerformed(e: AnActionEvent) {
-
+        ActiveUserType.showFeedbackDialog(e.project!!)
+        /*
         val notification = Notification(
                 KotlinFeedbackNotificationGroup.group.displayId,
                 "Collected statistic",
-                "<html>Projects info: ${gsonPrettyPrinter.toJson(
-                        projectsStatisticService.state!!.projectsStatisticState)}<br>" +
+                "<html>Data sharing consent: ${isSendFusEnabled()}<br>" +
+                        "Projects info: ${gsonPrettyPrinter.toJson(
+                                projectsStatisticService.state!!.projectsStatisticState)}<br>" +
                         "Last active time: ${LastActive.lastActive}<br>" +
                         "Is Kotlin project: ${isKotlinProject(e.project!!)}<br>" +
                         "Is EAP Intellij IDEA: ${isIntellijIdeaEAP()}<br>" +
@@ -51,12 +47,13 @@ class StatisticPluginShow : AnAction(), DumbAware {
                                 editRelevantStatisticService.state!!.countEditKotlinFile)}<br>" +
                         "Last date for show feedback notification " +
                         "${gsonPrettyPrinter.toJson(
-                                dateFeedbackStatService.state!!.showFeedbackNotificationDate)}<br>" +
+                                dateFeedbackStatService.state!!.dateShowFeedbackNotification)}<br>" +
                         "Last date for send feedback ${gsonPrettyPrinter.toJson(
-                                dateFeedbackStatService.state!!.sendFeedbackDate)}<html>",
+                                dateFeedbackStatService.state!!.dateSendFeedback)}<html>",
                 NotificationType.INFORMATION
         )
 
         notification.notify(e.project)
+        */
     }
 }

@@ -17,7 +17,11 @@ import java.io.IOException
 
 object FeedbackSender {
 
+    //TODO: Consider using URL
+    //TODO: Set right YouTrack repositoryApiUrl
     private const val repositoryApiUrl: String = "https://k-feedback-plugin-test.myjetbrains.com/youtrack/api"
+
+    //TODO: Set right YouTrack feedbackProjectId
     private const val feedbackProjectId: String = "0-0"
     private const val userAgent: String = "Kotlin Feedback plugin"
 

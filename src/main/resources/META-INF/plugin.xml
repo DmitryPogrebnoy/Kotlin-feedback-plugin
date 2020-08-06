@@ -37,6 +37,8 @@
         <editorFactoryMouseMotionListener
                 implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.TrackEditorMouseEvent"/>
         <notification.group groupId="Kotlin Feedback Notifications"/>
+        <postStartupActivity
+                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.project.TrackOpenedProjectInfo"/>
     </extensions>
 
     <project-components>
@@ -52,29 +54,12 @@
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
 
-    <projectListeners>
-        <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.project.TrackOpenedProjectInfo"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </projectListeners>
-
     <actions>
-        <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.FeedbackNotificationAction"
-                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.FeedbackNotificationAction"
-                text="Feedback Notification"
-                description="Action for show feedback notification">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt Q"/>
-        </action>
         <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.StatisticPluginShow"
                 class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.StatisticPluginShow"
                 text="StatisticPluginShow"
                 description="Shows statistics collected by the plugin">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt E"/>
-        </action>
-        <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackDialogAction"
-                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.FeedbackDialogAction"
-                text="Share Kotlin Feedback"
-                description="Shows the Kotlin feedback dialog">
-            <add-to-group group-id="HelpMenu" anchor="after" relative-to-action="SendFeedback"/>
         </action>
     </actions>
 </idea-plugin>

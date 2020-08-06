@@ -1,7 +1,7 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog.FeedbackDialog
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.IconLoader
@@ -11,6 +11,7 @@ import com.intellij.util.Consumer
 import java.awt.event.MouseEvent
 import javax.swing.Icon
 
+//TODO:Update widget
 class FeedbackWidget(project: Project): EditorBasedWidget(project), StatusBarWidget.IconPresentation {
 
     companion object {
@@ -34,8 +35,7 @@ class FeedbackWidget(project: Project): EditorBasedWidget(project), StatusBarWid
             CommandProcessor.getInstance().executeCommand(
                     project,
                     {
-                        val dialog = FeedbackDialog(project)
-                        dialog.show()
+                        UserTypeResolver.showFeedbackDialog(project)
                     },
                     FeedbackBundle.message("widget.show.dialog.command.name"),
                     null
