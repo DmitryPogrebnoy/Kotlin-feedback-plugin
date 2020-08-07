@@ -13,7 +13,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <statusBarWidgetFactory
-                id="KotlinFeedbackWidget"
+                id="Kotlin Feedback Widget"
                 implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget.FeedbackStatusBarWidgetFactory"
                 order="after inspectionProfileWidget"/>
         <applicationService

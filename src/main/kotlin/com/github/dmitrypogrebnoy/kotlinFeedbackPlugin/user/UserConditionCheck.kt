@@ -19,15 +19,16 @@ internal const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
 internal const val EDU_TOOLS_PLUGIN_ID = "com.jetbrains.edu"
 
 // 5 times
-internal const val MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE = 0
+internal const val MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE = 1
 
 // 10 days
-internal const val RELEVANT_DAYS: Long = 10
+internal const val RELEVANT_DAYS: Long = 0
 
 // 7 days
-internal const val RECENT_PROJECT_DAYS: Long = 7
+internal const val RECENT_PROJECT_DAYS: Long = 0
 
-internal const val RECENT_KOTLIN_PROJECT_WITHOUT_VCS = 3
+// 3
+internal const val RECENT_KOTLIN_PROJECT_WITHOUT_VCS = 0
 
 internal fun checkRelevantNumberKotlinFileEditing(): Boolean {
     val editorState: Map<LocalDate, EditInfo> = service<EditStatisticService>().state?.countEditKotlinFile
@@ -38,7 +39,7 @@ internal fun checkRelevantNumberKotlinFileEditing(): Boolean {
             acc + entry.value.numberEditing
         } else acc
     }
-    return numberRelevantEditKotlin > MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE
+    return numberRelevantEditKotlin >= MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE
 }
 
 internal fun needCollectUserFeedback(): Boolean {

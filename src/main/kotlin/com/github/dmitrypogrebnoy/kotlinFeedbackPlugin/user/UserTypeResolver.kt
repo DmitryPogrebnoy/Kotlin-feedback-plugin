@@ -4,8 +4,9 @@ import com.intellij.openapi.project.Project
 
 object UserTypeResolver {
 
-    private fun resolveUserType(): UserType {
+    fun resolveUserType(): UserType {
         //TODO: Leave a comment why this order
+        //TODO: Maybe add new fourth user type
         return when {
             BeginnerUserType.isUserSatisfiesUserType() -> BeginnerUserType
             ActiveUserType.isUserSatisfiesUserType() -> ActiveUserType
@@ -19,6 +20,6 @@ object UserTypeResolver {
     }
 
     fun showFeedbackDialog(project: Project) {
-        resolveUserType().showFeedbackNotification(project)
+        resolveUserType().showFeedbackDialog(project)
     }
 }

@@ -1,13 +1,17 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.converter.TasksStatisticConverter
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.ActiveUserType
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.KotlinFeedbackNotificationGroup
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
@@ -25,12 +29,15 @@ class StatisticPluginShow : AnAction(), DumbAware {
 
 
     override fun actionPerformed(e: AnActionEvent) {
-        ActiveUserType.showFeedbackDialog(e.project!!)
-        /*
+
         val notification = Notification(
                 KotlinFeedbackNotificationGroup.group.displayId,
                 "Collected statistic",
-                "<html>Data sharing consent: ${isSendFusEnabled()}<br>" +
+                "<html>" +
+                        "Is satisfies BeginnerUserType: ${BeginnerUserType.isUserSatisfiesUserType()}<br>" +
+                        "Is satisfies SimpleUserType: ${SimpleUserType.isUserSatisfiesUserType()}<br>" +
+                        "Is satisfies ActiveUserType: ${ActiveUserType.isUserSatisfiesUserType()}<br><br>" +
+                        "Data sharing consent: ${isSendFusEnabled()}<br>" +
                         "Projects info: ${gsonPrettyPrinter.toJson(
                                 projectsStatisticService.state!!.projectsStatisticState)}<br>" +
                         "Last active time: ${LastActive.lastActive}<br>" +
@@ -49,11 +56,12 @@ class StatisticPluginShow : AnAction(), DumbAware {
                         "${gsonPrettyPrinter.toJson(
                                 dateFeedbackStatService.state!!.dateShowFeedbackNotification)}<br>" +
                         "Last date for send feedback ${gsonPrettyPrinter.toJson(
-                                dateFeedbackStatService.state!!.dateSendFeedback)}<html>",
+                                dateFeedbackStatService.state!!.dateSendFeedback)}<br>" +
+                        "Last date for close or cancel feedback dialog ${gsonPrettyPrinter.toJson(
+                                dateFeedbackStatService.state!!.dateCloseFeedbackDialog)}<html>",
                 NotificationType.INFORMATION
         )
 
         notification.notify(e.project)
-        */
     }
 }

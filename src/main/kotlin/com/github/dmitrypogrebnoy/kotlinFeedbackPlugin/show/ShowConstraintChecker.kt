@@ -12,11 +12,14 @@ import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-// 30 days
+// 45 days
 internal const val MIN_DAYS_SINCE_SEND_FEEDBACK: Long = 0
 
+// 90 days
+internal const val MIN_DAYS_SINCE_CLOSE_FEEDBACK: Long = 2
+
 // 5 days
-internal const val MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION: Long = 0
+internal const val MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION: Long = 2
 
 // 2 minutes
 internal const val MIN_DURATION_COMPILE_TASK = 2
@@ -70,13 +73,17 @@ internal fun checkGradleRefreshTaskDuration(projectName: String): Boolean {
 internal fun checkFeedbackDate(): Boolean {
     val dateFeedbackState: DateFeedbackState = service<DateFeedbackStatService>().state ?: return false
     val dayFromLastSendFeedback = Duration.between(
-            LocalDate.now().atStartOfDay(),
-            dateFeedbackState.dateSendFeedback.atStartOfDay()).toDays()
-    val dayFromLastShowFeedbackNotification = Duration.between(LocalDate.now().atStartOfDay(),
-            dateFeedbackState.dateShowFeedbackNotification.atStartOfDay()).toDays()
-
-    return dayFromLastSendFeedback >= MIN_DAYS_SINCE_SEND_FEEDBACK &&
-            dayFromLastShowFeedbackNotification >= MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION
+            dateFeedbackState.dateSendFeedback.atStartOfDay(),
+            LocalDate.now().atStartOfDay()).toDays()
+    val dayFromLastCloseFeedbackDialog = Duration.between(
+            dateFeedbackState.dateCloseFeedbackDialog.atStartOfDay(),
+            LocalDate.now().atStartOfDay()).toDays()
+    val dayFromLastShowFeedbackNotification = Duration.between(
+            dateFeedbackState.dateShowFeedbackNotification.atStartOfDay(),
+            LocalDate.now().atStartOfDay()).toDays()
+    return dayFromLastSendFeedback >= MIN_DAYS_SINCE_SEND_FEEDBACK
+            && dayFromLastCloseFeedbackDialog >= MIN_DAYS_SINCE_CLOSE_FEEDBACK
+            && dayFromLastShowFeedbackNotification >= MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION
 }
 
 internal fun checkLastActive(lastActiveDateTime: LocalDateTime): Boolean {
