@@ -1,5 +1,6 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.CustomQuestionsLoader.getBeginnerCustomQuestion
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
@@ -33,7 +34,7 @@ class StatisticPluginShow : AnAction(), DumbAware {
         val notification = Notification(
                 KotlinFeedbackNotificationGroup.group.displayId,
                 "Collected statistic",
-                "<html>" +
+                "<html>${getBeginnerCustomQuestion()}<br>" +
                         "Is satisfies BeginnerUserType: ${BeginnerUserType.isUserSatisfiesUserType()}<br>" +
                         "Is satisfies SimpleUserType: ${SimpleUserType.isUserSatisfiesUserType()}<br>" +
                         "Is satisfies ActiveUserType: ${ActiveUserType.isUserSatisfiesUserType()}<br><br>" +
@@ -63,5 +64,7 @@ class StatisticPluginShow : AnAction(), DumbAware {
         )
 
         notification.notify(e.project)
+
+
     }
 }

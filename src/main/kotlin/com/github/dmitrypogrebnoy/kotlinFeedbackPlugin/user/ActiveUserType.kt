@@ -1,5 +1,6 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.CustomQuestionsLoader.getActiveCustomQuestion
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog.ActiveUserFeedbackDialog
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.ActiveUserTypeNotificationAction
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.RequestFeedbackNotification
@@ -8,6 +9,8 @@ import com.intellij.openapi.project.Project
 object ActiveUserType : UserType {
 
     override val userTypeName: String = "Active Kotlin user"
+
+    override var customQuestion: CustomQuestion? = getActiveCustomQuestion()
 
     override fun isUserSatisfiesUserType(): Boolean {
         return needCollectUserFeedback() && isKotlinPluginEAP() && isKotlinPluginEnabled()

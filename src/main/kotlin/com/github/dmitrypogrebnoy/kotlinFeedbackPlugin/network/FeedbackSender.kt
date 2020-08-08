@@ -1,47 +1,28 @@
-package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.send
+package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.HttpClient.executeMethod
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler
 import org.apache.commons.httpclient.Header
-import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.httpclient.methods.PostMethod
 import org.apache.commons.httpclient.methods.StringRequestEntity
 import org.apache.commons.httpclient.methods.multipart.FilePart
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
-import org.apache.commons.httpclient.params.HttpConnectionParams
 import org.apache.commons.httpclient.params.HttpMethodParams
 import java.io.File
 import java.io.IOException
 
 object FeedbackSender {
 
-    //TODO: Consider using URL
     //TODO: Set right YouTrack repositoryApiUrl
     private const val repositoryApiUrl: String = "https://k-feedback-plugin-test.myjetbrains.com/youtrack/api"
 
     //TODO: Set right YouTrack feedbackProjectId
     private const val feedbackProjectId: String = "0-0"
-    private const val userAgent: String = "Kotlin Feedback plugin"
-
-    // In ms
-    private const val connectionTimeout: Int = 30000
-
-    // In ms
-    private const val socketTimeout: Int = 10000
 
     // Size in byte - 10 Mb
     const val attachFileMaxSize: Int = 10485760
-
-    private val httpClient: HttpClient = HttpClient()
-
-    init {
-        httpClient.params.setParameter(HttpMethodParams.RETRY_HANDLER, DefaultHttpMethodRetryHandler())
-        httpClient.params.setParameter(HttpMethodParams.USER_AGENT, userAgent)
-        httpClient.params.setParameter(HttpConnectionParams.CONNECTION_TIMEOUT, connectionTimeout)
-        httpClient.params.setParameter(HttpConnectionParams.SO_TIMEOUT, socketTimeout)
-    }
 
     //Returns the created issue id or throws an IOException
     fun createFeedbackIssue(subject: String, description: String): String {
@@ -62,7 +43,7 @@ object FeedbackSender {
                 Charsets.UTF_8.name()
         )
         try {
-            val statusCode = httpClient.executeMethod(createIssueMethod)
+            val statusCode = executeMethod(createIssueMethod)
             val responseBody = createIssueMethod.responseBodyAsStream.reader().readText()
             if (statusCode != HttpStatus.SC_OK) {
                 val errorResponse = JsonParser.parseString(responseBody).asJsonObject
@@ -86,7 +67,7 @@ object FeedbackSender {
         val filePart = FilePart(file.name, file)
         attachFileMethod.requestEntity = MultipartRequestEntity(arrayOf(filePart), attachFileMethod.params)
         try {
-            val statusCode = httpClient.executeMethod(attachFileMethod)
+            val statusCode = executeMethod(attachFileMethod)
             val responseBody = attachFileMethod.responseBodyAsStream.reader().readText()
             if (statusCode != HttpStatus.SC_OK) {
                 val errorResponse = JsonParser.parseString(responseBody).asJsonObject

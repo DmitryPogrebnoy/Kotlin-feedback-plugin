@@ -6,6 +6,8 @@ interface UserType {
 
     val userTypeName: String
 
+    var customQuestion: CustomQuestion?
+
     fun isUserSatisfiesUserType(): Boolean
 
     fun showFeedbackNotification(project: Project)

@@ -6,6 +6,9 @@ object NoneUserType : UserType {
 
     override val userTypeName: String = "None Kotlin user"
 
+    //Always null
+    override var customQuestion: CustomQuestion? = null
+
     override fun isUserSatisfiesUserType(): Boolean {
         return true
     }

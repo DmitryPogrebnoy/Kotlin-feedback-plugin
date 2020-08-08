@@ -3,6 +3,7 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.CustomQuestion
 import com.intellij.ide.ui.laf.darcula.ui.DarculaLabelUI
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
@@ -28,6 +29,8 @@ abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWr
     protected abstract val feedbackLabel: JBLabel
     protected abstract val feedbackTextArea: EditorTextField
     protected abstract val feedbackDialogPanel: DialogPanel
+    protected abstract val customQuestionLabel: JBLabel?
+    protected abstract val customQuestionTextArea: EditorTextField?
     protected val dateFeedbackStatService: DateFeedbackStatService = service()
     protected abstract val successSendFeedbackNotification: SuccessSendFeedbackNotification
 
@@ -78,6 +81,33 @@ abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWr
             setOneLineMode(false)
             preferredSize = Dimension(700, 200)
         }
+    }
+
+    fun createCustomQuestionLabel(customQuestion: CustomQuestion?): JBLabel? {
+        return JBLabel(customQuestion?.question ?: return null).apply {
+            ui = DarculaLabelUI()
+            font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
+        }
+    }
+
+    protected open fun createCustomQuestionTextField(customQuestion: CustomQuestion?): EditorTextField? {
+        return if (customQuestion != null) {
+            EditorTextField(project, PlainTextFileType.INSTANCE).apply {
+                addSettingsProvider {
+                    it.settings.isUseSoftWraps = true
+                    it.setBorder(
+                            BorderFactory.createCompoundBorder(
+                                    BorderFactory.createEmptyBorder(4, 4, 4, 0),
+                                    feedbackTextArea.border)
+                    )
+                    it.setVerticalScrollbarVisible(true)
+                }
+                autoscrolls = true
+                setPlaceholder(customQuestion.textFieldSettings.placeholder)
+                setOneLineMode(false)
+                preferredSize = Dimension(700, customQuestion.textFieldSettings.height)
+            }
+        } else null
     }
 
     protected open fun createAttachFileLabel(labelText: String): JBLabel {

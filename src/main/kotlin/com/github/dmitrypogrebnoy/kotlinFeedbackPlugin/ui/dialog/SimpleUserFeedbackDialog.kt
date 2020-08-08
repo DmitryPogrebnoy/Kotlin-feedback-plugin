@@ -1,7 +1,7 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.send.FeedbackSender
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.FeedbackSender
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.SimpleUserType
 import com.intellij.ide.ui.laf.darcula.ui.DarculaPanelUI
@@ -27,6 +27,8 @@ class SimpleUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
     override val feedbackLabel: JBLabel
     override val feedbackTextArea: EditorTextField
     override val feedbackDialogPanel: DialogPanel
+    override val customQuestionLabel: JBLabel?
+    override val customQuestionTextArea: EditorTextField?
     private val attachFileLabel: JBLabel
     private val attachFile: TextFieldWithBrowseButton
     override val successSendFeedbackNotification: SuccessSendFeedbackNotification
@@ -48,6 +50,9 @@ class SimpleUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
                 FeedbackBundle.message("dialog.default.content.attach.file.title"),
                 FeedbackBundle.message("dialog.default.content.attach.file.description")
         )
+
+        customQuestionLabel = createCustomQuestionLabel(SimpleUserType.customQuestion)
+        customQuestionTextArea = createCustomQuestionTextField(SimpleUserType.customQuestion)
 
         feedbackDialogPanel = createFeedbackDialogPanel()
 
@@ -74,11 +79,22 @@ class SimpleUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
                     close(OK_EXIT_CODE)
                     successSendFeedbackNotification.notify(project)
 
+                    val textBody = StringBuilder()
+                    textBody.append("Feedback ")
+                    textBody.append(feedbackTextArea.text)
+                    textBody.append("\n\n")
+                    if (customQuestionLabel != null) {
+                        textBody.append(customQuestionLabel.text)
+                    }
+                    if (customQuestionTextArea != null) {
+                        textBody.append("\n" + customQuestionTextArea.text)
+                    }
+
                     //then try to send feedback
                     try {
                         val newIssueId = FeedbackSender.createFeedbackIssue(
                                 SimpleUserType.userTypeName + "feedback",
-                                feedbackTextArea.text
+                                textBody.toString()
                         )
                         if (attachFile.text.isNotEmpty()) {
                             val file = File(attachFile.text)
@@ -108,6 +124,19 @@ class SimpleUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
                     feedbackTextArea()
                 }
             }
+            if (customQuestionLabel != null && customQuestionTextArea != null) {
+                // JComponent not working with nullable type.
+                // Moreover, the forced type conversion from nullable to normal is regarded as unnecessary
+                // and removed during auto-formatting.
+                val notNullCustomQuestionLabel: JBLabel = customQuestionLabel
+                val notNullCustomQuestionTextArea: EditorTextField = customQuestionTextArea
+                row {
+                    cell(isVerticalFlow = true, isFullWidth = true) {
+                        notNullCustomQuestionLabel()
+                        notNullCustomQuestionTextArea()
+                    }
+                }
+            }
             row {
                 cell(isVerticalFlow = true, isFullWidth = true) {
                     attachFileLabel()
@@ -132,7 +161,23 @@ class SimpleUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
         }
 
         if (feedbackTextArea.text.isEmpty()) {
-            validationInfoList.add(ValidationInfo(FeedbackBundle.message("dialog.default.validate.description.empty"), feedbackTextArea))
+            validationInfoList.add(
+                    ValidationInfo(
+                            FeedbackBundle.message("dialog.default.validate.description.empty"),
+                            feedbackTextArea
+                    )
+            )
+        }
+
+        if (customQuestionTextArea != null) {
+            if (customQuestionTextArea.text.isEmpty()) {
+                validationInfoList.add(
+                        ValidationInfo(
+                                FeedbackBundle.message("dialog.default.validate.custom.questions.empty"),
+                                customQuestionTextArea
+                        )
+                )
+            }
         }
 
         return validationInfoList
