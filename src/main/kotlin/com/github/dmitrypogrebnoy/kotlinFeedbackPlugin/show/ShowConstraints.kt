@@ -1,5 +1,11 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show
 
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsConstantsLoader.getMinDaysSinceCloseFeedbackDialog
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsConstantsLoader.getMinDaysSinceSendFeedback
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsConstantsLoader.getMinDaysSinceShowNotification
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsConstantsLoader.getMinDurationCompileTask
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsConstantsLoader.getMinDurationGradleTask
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsConstantsLoader.getMinInactiveTime
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
@@ -13,22 +19,38 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 // 45 days
-internal const val MIN_DAYS_SINCE_SEND_FEEDBACK: Long = 0
+private const val DEFAULT_MIN_DAYS_SINCE_SEND_FEEDBACK = 0
 
 // 90 days
-internal const val MIN_DAYS_SINCE_CLOSE_FEEDBACK: Long = 2
+private const val DEFAULT_MIN_DAYS_SINCE_CLOSE_FEEDBACK_DIALOG = 2
 
 // 5 days
-internal const val MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION: Long = 2
+private const val DEFAULT_MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION = 2
 
 // 2 minutes
-internal const val MIN_DURATION_COMPILE_TASK = 2
+private const val DEFAULT_MIN_DURATION_COMPILE_TASK = 2
 
 // 2 minutes
-internal const val MIN_DURATION_GRADLE_TASK = 0
+private const val DEFAULT_MIN_DURATION_GRADLE_TASK = 0
 
 // 20 minutes
-internal const val INACTIVE_TIME: Long = 20
+private const val DEFAULT_MIN_INACTIVE_TIME = 20
+
+
+internal val MIN_DAYS_SINCE_SEND_FEEDBACK = getMinDaysSinceSendFeedback() ?: DEFAULT_MIN_DAYS_SINCE_SEND_FEEDBACK
+
+internal val MIN_DAYS_SINCE_CLOSE_FEEDBACK_DIALOG = getMinDaysSinceCloseFeedbackDialog()
+        ?: DEFAULT_MIN_DAYS_SINCE_CLOSE_FEEDBACK_DIALOG
+
+internal val MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION = getMinDaysSinceShowNotification()
+        ?: DEFAULT_MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION
+
+internal val MIN_DURATION_COMPILE_TASK = getMinDurationCompileTask() ?: DEFAULT_MIN_DURATION_COMPILE_TASK
+
+internal val MIN_DURATION_GRADLE_TASK = getMinDurationGradleTask() ?: DEFAULT_MIN_DURATION_GRADLE_TASK
+
+internal val MIN_INACTIVE_TIME = getMinInactiveTime() ?: DEFAULT_MIN_INACTIVE_TIME
+
 
 internal fun checkCompileTaskDuration(projectName: String): Boolean {
     val taskStatisticState: TasksStatisticState = service<TasksStatisticService>().state
@@ -82,12 +104,12 @@ internal fun checkFeedbackDate(): Boolean {
             dateFeedbackState.dateShowFeedbackNotification.atStartOfDay(),
             LocalDate.now().atStartOfDay()).toDays()
     return dayFromLastSendFeedback >= MIN_DAYS_SINCE_SEND_FEEDBACK
-            && dayFromLastCloseFeedbackDialog >= MIN_DAYS_SINCE_CLOSE_FEEDBACK
+            && dayFromLastCloseFeedbackDialog >= MIN_DAYS_SINCE_CLOSE_FEEDBACK_DIALOG
             && dayFromLastShowFeedbackNotification >= MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION
 }
 
 internal fun checkLastActive(lastActiveDateTime: LocalDateTime): Boolean {
-    return Duration.between(LocalDateTime.now(), lastActiveDateTime).toMinutes() >= INACTIVE_TIME
+    return Duration.between(LocalDateTime.now(), lastActiveDateTime).toMinutes() >= MIN_INACTIVE_TIME
 }
 
 internal fun showCompileTimeNotificationIfPossible(project: Project) {

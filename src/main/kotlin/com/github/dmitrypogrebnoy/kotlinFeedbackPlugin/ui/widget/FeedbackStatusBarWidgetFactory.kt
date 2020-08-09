@@ -1,6 +1,7 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.setting.FunctionalitySettings.enableWidget
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.NoneUserType
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver
@@ -23,7 +24,7 @@ class FeedbackStatusBarWidgetFactory: StatusBarWidgetFactory {
     }
 
     override fun isEnabledByDefault(): Boolean {
-        return currentUserType != NoneUserType
+        return enableWidget && (currentUserType != NoneUserType)
     }
 
     override fun getDisplayName(): String {
@@ -35,7 +36,7 @@ class FeedbackStatusBarWidgetFactory: StatusBarWidgetFactory {
     }
 
     override fun isAvailable(project: Project): Boolean {
-        return currentUserType != NoneUserType
+        return enableWidget && (currentUserType != NoneUserType)
     }
 
     override fun createWidget(project: Project): StatusBarWidget {
@@ -43,10 +44,10 @@ class FeedbackStatusBarWidgetFactory: StatusBarWidgetFactory {
     }
 
     override fun canBeEnabledOn(statusBar: StatusBar): Boolean {
-        return currentUserType != NoneUserType
+        return enableWidget && (currentUserType != NoneUserType)
     }
 
     override fun isConfigurable(): Boolean {
-        return currentUserType != NoneUserType
+        return enableWidget && (currentUserType != NoneUserType)
     }
 }

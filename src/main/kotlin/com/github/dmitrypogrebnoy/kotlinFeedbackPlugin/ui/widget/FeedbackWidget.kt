@@ -1,6 +1,7 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.setting.FunctionalitySettings.enableWidgetIconColor
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.checkFeedbackDate
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
 import com.intellij.openapi.command.CommandProcessor
@@ -43,7 +44,7 @@ class FeedbackWidget(private val currentUserType: UserType,
 
     override fun getIcon(): Icon? {
         // Update widget when change DateFeedbackState
-        return if (checkFeedbackDate()) {
+        return if (checkFeedbackDate() && enableWidgetIconColor) {
             IconLoader.getIcon("/kotlin.svg")
         } else {
             IconLoader.getIcon("/kotlin-mono.svg")

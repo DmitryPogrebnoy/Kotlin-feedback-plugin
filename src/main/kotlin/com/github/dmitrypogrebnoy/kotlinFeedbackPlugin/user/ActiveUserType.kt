@@ -1,6 +1,7 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.CustomQuestionsLoader.getActiveCustomQuestion
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.setting.FunctionalitySettings.enableNotification
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog.ActiveUserFeedbackDialog
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.ActiveUserTypeNotificationAction
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.RequestFeedbackNotification
@@ -18,9 +19,11 @@ object ActiveUserType : UserType {
     }
 
     override fun showFeedbackNotification(project: Project) {
-        val notification = RequestFeedbackNotification()
-        notification.addAction(ActiveUserTypeNotificationAction())
-        notification.notify(project)
+        if (enableNotification) {
+            val notification = RequestFeedbackNotification()
+            notification.addAction(ActiveUserTypeNotificationAction())
+            notification.notify(project)
+        }
     }
 
     override fun showFeedbackDialog(project: Project) {
