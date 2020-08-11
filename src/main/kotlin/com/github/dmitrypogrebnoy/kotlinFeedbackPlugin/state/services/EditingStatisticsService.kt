@@ -5,8 +5,14 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 
-@State(name = "EditRelevantState", reloadable = true, storages = [Storage("EditRelevantState.xml")])
-class EditStatisticService : PersistentStateComponent<EditState> {
+/**
+ * Service for working with edit state.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditState
+ */
+
+@State(name = "EditState", reloadable = true, storages = [Storage("EditState.xml")])
+class EditingStatisticsService : PersistentStateComponent<EditState> {
 
     private var state: EditState = EditState()
 

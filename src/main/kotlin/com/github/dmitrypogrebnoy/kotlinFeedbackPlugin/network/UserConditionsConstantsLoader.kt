@@ -3,6 +3,14 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.HttpClient.getJsonFileFromGithub
 import com.google.gson.JsonObject
 
+/**
+ * Downloads plugin user conditions constants from json file on Github.
+ *
+ * File name: "UserConditionsConstants.json".
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserConditionsKt
+ */
+
 object UserConditionsConstantsLoader {
 
     //TODO: Set right Github url

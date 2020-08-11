@@ -7,6 +7,13 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.RequestFe
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SimpleUserTypeNotificationAction
 import com.intellij.openapi.project.Project
 
+/**
+ * This object represents the simple user type.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver
+ */
+
 object SimpleUserType : UserType {
 
     override val userTypeName: String = "Simple Kotlin user"

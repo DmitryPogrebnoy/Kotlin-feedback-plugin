@@ -5,6 +5,14 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.CustomQuestion
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.QuestionTextFieldSettings
 import com.google.gson.JsonObject
 
+/**
+ * Downloads custom questions and related options for each user type from json file on Github.
+ *
+ * File name: "CustomQuestions.json".
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
+ */
+
 object CustomQuestionsLoader {
 
     //TODO: Set right Github url
@@ -24,6 +32,12 @@ object CustomQuestionsLoader {
         return getCustomQuestion("active_user_type")
     }
 
+    /**
+     * Parses question form json
+     *
+     * @return CustomQuestion if the loading and parsing was successful.
+     * And null if an error occurred while loading, if there is no question, or if the question is an empty string.
+     */
     private fun getCustomQuestion(userType: String): CustomQuestion? {
         return if (questionsJsonString != null) {
             try {

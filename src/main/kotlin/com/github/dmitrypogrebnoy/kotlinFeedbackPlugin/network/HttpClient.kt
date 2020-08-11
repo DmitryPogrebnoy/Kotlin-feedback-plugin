@@ -10,6 +10,9 @@ import org.apache.commons.httpclient.params.HttpMethodParams
 import java.io.IOException
 import java.util.*
 
+/**
+ * HTTP client for all plugin requests.
+ */
 object HttpClient {
 
     private const val userAgent: String = "Kotlin Feedback plugin"
@@ -33,6 +36,12 @@ object HttpClient {
         return httpClient.executeMethod(method)
     }
 
+    /**
+     * Load json file from Github.
+     *
+     * @param url the path to the file in the Github repository.
+     * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.FunctionalitySettingsLoader.jsonSettings
+     */
     fun getJsonFileFromGithub(url: String): JsonObject? {
         val getJsonFileMethod = GetMethod(url)
         getJsonFileMethod.addRequestHeader(Header("Accept:", "application/vnd.github.v3+json"))

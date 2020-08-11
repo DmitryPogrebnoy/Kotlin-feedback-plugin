@@ -10,6 +10,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 import java.time.LocalDate
 
+/**
+ * Tracks open projects and stores information about them.
+ */
+
 class TrackOpenedProjectInfo : StartupActivity {
 
     private val projectsStatisticsService: ProjectsStatisticService = service()

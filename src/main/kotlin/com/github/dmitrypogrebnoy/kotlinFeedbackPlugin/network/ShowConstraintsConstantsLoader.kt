@@ -3,6 +3,14 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.HttpClient.getJsonFileFromGithub
 import com.google.gson.JsonObject
 
+/**
+ * Downloads show constraints constants from json file on Github.
+ *
+ * File name: "ShowConstraintsConstants.json".
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.ShowConstraintsKt
+ */
+
 object ShowConstraintsConstantsLoader {
 
     //TODO: Set right Github url

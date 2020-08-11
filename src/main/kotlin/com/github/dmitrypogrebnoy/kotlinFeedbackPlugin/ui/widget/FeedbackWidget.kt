@@ -2,7 +2,7 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.setting.FunctionalitySettings.enableWidgetIconColor
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.checkFeedbackDate
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.checkFeedbackDatesForWidget
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.project.Project
@@ -16,6 +16,11 @@ import java.awt.event.MouseEvent
 import java.time.LocalTime
 import javax.swing.Icon
 
+/**
+ * Feedback plugin widget.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget.FeedbackStatusBarWidgetFactory
+ */
 
 /*
  * Set when the project window is created and is updated when the statusBar.update Widget (id) is called.
@@ -44,7 +49,7 @@ class FeedbackWidget(private val currentUserType: UserType,
 
     override fun getIcon(): Icon? {
         // Update widget when change DateFeedbackState
-        return if (checkFeedbackDate() && enableWidgetIconColor) {
+        return if (checkFeedbackDatesForWidget() && enableWidgetIconColor) {
             IconLoader.getIcon("/kotlin.svg")
         } else {
             IconLoader.getIcon("/kotlin-mono.svg")

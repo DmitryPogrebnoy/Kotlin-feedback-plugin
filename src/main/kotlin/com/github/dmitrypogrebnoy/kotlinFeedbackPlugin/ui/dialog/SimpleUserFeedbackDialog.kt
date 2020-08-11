@@ -20,6 +20,12 @@ import javax.swing.AbstractAction
 import javax.swing.Action
 import javax.swing.UIManager
 
+/**
+ * Feedback dialog for simple user type.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.SimpleUserType
+ */
+
 class SimpleUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(project) {
 
     override val titleLabel: JBLabel
@@ -73,8 +79,8 @@ class SimpleUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
             override fun actionPerformed(e: ActionEvent?) {
                 //first close window
                 if (doValidateAll().isEmpty()) {
-                    if (dateFeedbackStatService.state != null) {
-                        dateFeedbackStatService.state!!.dateSendFeedback = LocalDate.now()
+                    if (feedbackDatesService.state != null) {
+                        feedbackDatesService.state!!.dateSendFeedback = LocalDate.now()
                     }
                     close(OK_EXIT_CODE)
                     successSendFeedbackNotification.notify(project)

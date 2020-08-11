@@ -2,11 +2,48 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user
 
 import com.intellij.openapi.project.Project
 
-object UserTypeResolver {
+/**
+ * Resolves the user type for the current user.
+ */
 
+object UserTypeResolver {
+    /**
+     * The resolving is as follows:
+     *
+     *     All user types, except None user type,
+     *     must satisfies the following conditions:
+     *     - Installed Kotlin plugin
+     *     - Collection of statistics usage functions is enabled
+     *
+     *     Beginner user type:
+     *     - Enabled Kotlin plugin
+     *     - Recently frequently edited Kotlin files
+     *     - And at least one condition of the following:
+     *         - Installed and enabled EduTools plugin
+     *         - Recently often opened Kotlin projects without VCS
+     *
+     *     Active user type:
+     *     - Enabled Kotlin plugin
+     *     - Recently frequently edited Kotlin files
+     *     - Installed EAP version of Kotlin plugin
+     *
+     *     Simple user type:
+     *     - Enabled Kotlin plugin
+     *     - Recently frequently edited Kotlin files
+     *
+     *     None user type:
+     *     - No conditions
+     *
+     * The order is defined so that the user does not fall into the simple user type,
+     * while satisfying the active user type.
+     *
+     * None user type is used for users who do not match more than one user type.
+     * There is no need to collect feedback from such users.
+     *
+     */
     fun resolveUserType(): UserType {
-        //TODO: Leave a comment why this order
-        //TODO: Maybe add new fourth user type
+
+        //TODO: Maybe add new fourth user type - left Kotlin user
         return when {
             BeginnerUserType.isUserSatisfiesUserType() -> BeginnerUserType
             ActiveUserType.isUserSatisfiesUserType() -> ActiveUserType

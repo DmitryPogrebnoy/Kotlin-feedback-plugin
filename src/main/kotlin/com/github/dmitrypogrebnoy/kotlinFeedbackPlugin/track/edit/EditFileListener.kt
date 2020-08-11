@@ -1,7 +1,7 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditInfo
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditingStatisticsService
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.openapi.vfs.VirtualFile
@@ -9,9 +9,13 @@ import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import java.time.LocalDate
 
+/**
+ * Tracks edits to Kotlin files.
+ */
+
 class EditFileListener : BulkFileListener {
 
-    private val editRelevantStatisticService = service<EditStatisticService>()
+    private val editRelevantStatisticService = service<EditingStatisticsService>()
 
     override fun after(events: MutableList<out VFileEvent>) {
         for (event in events) {

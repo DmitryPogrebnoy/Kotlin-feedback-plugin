@@ -4,6 +4,10 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 
+/**
+ * Basic notification to thank the user for the Kotlin feedback
+ */
+
 class SuccessSendFeedbackNotification(
         titleText: String = FeedbackBundle.message("success.send.feedback.default.notification.title"),
         descriptionText: String = FeedbackBundle.message("success.send.feedback.default.notification.content")

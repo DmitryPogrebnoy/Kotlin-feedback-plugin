@@ -1,13 +1,17 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.show.DateFeedbackState
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.FeedbackDatesService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.show.FeedbackDatesState
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import java.time.LocalDate
+
+/**
+ * Basic notification for Kotlin feedback requests
+ */
 
 class RequestFeedbackNotification(
         titleText: String = FeedbackBundle.message("request.feedback.default.notification.title"),
@@ -21,8 +25,8 @@ class RequestFeedbackNotification(
 
     //Tracking showing notification
     override fun notify(project: Project?) {
-        val dateFeedbackState: DateFeedbackState = service<DateFeedbackStatService>().state ?: return
+        val feedbackDatesState: FeedbackDatesState = service<FeedbackDatesService>().state ?: return
         super.notify(project)
-        dateFeedbackState.dateShowFeedbackNotification = LocalDate.now()
+        feedbackDatesState.dateShowFeedbackNotification = LocalDate.now()
     }
 }

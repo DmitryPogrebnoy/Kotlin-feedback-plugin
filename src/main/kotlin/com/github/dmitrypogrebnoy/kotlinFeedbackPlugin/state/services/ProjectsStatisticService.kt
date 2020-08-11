@@ -5,6 +5,12 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 
+/**
+ * Service for working with projects statistic state.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.project.ProjectsStatisticState
+ */
+
 @State(name = "ProjectsStatisticState", reloadable = true, storages = [Storage("ProjectsStatisticState.xml")])
 class ProjectsStatisticService : PersistentStateComponent<ProjectsStatisticState> {
 

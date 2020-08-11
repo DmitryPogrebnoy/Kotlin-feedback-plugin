@@ -6,6 +6,11 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 
+/**
+ * Notification action for beginner user type.
+ * When executed, it opens a feedback dialog for the beginner user type.
+ */
+
 class BeginnerUserTypeNotificationAction : NotificationAction(
         FeedbackBundle.message("request.feedback.default.notification.action.submit")
 ) {

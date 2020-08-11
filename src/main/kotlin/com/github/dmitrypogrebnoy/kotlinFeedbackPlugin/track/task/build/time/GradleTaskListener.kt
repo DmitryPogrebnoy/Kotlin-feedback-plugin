@@ -12,6 +12,13 @@ import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.openapi.project.Project
 import java.time.LocalTime
 
+/**
+ * Tracks the end of the EXECUTE_TYPE of Gradle task type.
+ * Fully tracks the duration RESOLVE_PROJECT and REFRESH_TASKS_LIST of Gradle task type.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.GradleTaskManager
+ */
+
 // Tracking end time gradle EXECUTE_TYPE type task.
 // Full tracking time gradle RESOLVE_PROJECT and REFRESH_TASKS_LIST types task.
 class GradleTaskListener : ExternalSystemTaskNotificationListener {

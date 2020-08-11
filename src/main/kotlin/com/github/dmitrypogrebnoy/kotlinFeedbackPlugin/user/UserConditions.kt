@@ -5,7 +5,7 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsCon
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getNumberRecentKotlinProjectsWithoutVcs
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getNumberRelevantDays
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditInfo
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditingStatisticsService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.ide.plugins.PluginManagerCore
@@ -17,6 +17,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.ProjectLevelVcsManager
 import com.intellij.psi.search.FilenameIndex
 import java.time.LocalDate
+
+/**
+ * Constants and a function to resolve the type of user for the current user.
+ */
 
 private const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
 
@@ -48,7 +52,7 @@ internal val NUMBER_RECENT_KOTLIN_PROJECTS_WITHOUT_VCS: Int = getNumberRecentKot
 
 
 internal fun checkRelevantNumberKotlinFileEditing(): Boolean {
-    val editorState: Map<LocalDate, EditInfo> = service<EditStatisticService>().state?.countEditKotlinFile
+    val editorState: Map<LocalDate, EditInfo> = service<EditingStatisticsService>().state?.countEditKotlinFile
             ?: return false
     val startRelevantDays = LocalDate.now().minusDays(NUMBER_RELEVANT_DAYS.toLong())
     val numberRelevantEditKotlin = editorState.entries.fold(0) { acc: Long, entry: Map.Entry<LocalDate, EditInfo> ->

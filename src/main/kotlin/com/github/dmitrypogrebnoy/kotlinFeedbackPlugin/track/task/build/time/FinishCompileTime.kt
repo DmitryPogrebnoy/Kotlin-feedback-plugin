@@ -7,6 +7,12 @@ import com.intellij.openapi.compiler.CompileTask
 import com.intellij.openapi.components.service
 import java.time.LocalTime
 
+/**
+ * Tracks the end of the compilation task and saves its duration.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.TasksStatisticState
+ */
+
 class FinishCompileTime : CompileTask {
     override fun execute(context: CompileContext?): Boolean {
         if (context != null) {

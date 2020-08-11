@@ -11,7 +11,11 @@ import org.jetbrains.plugins.gradle.service.task.GradleTaskManagerExtension
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import java.time.LocalTime
 
-// Tracking starting time EXECUTE_TYPE type gradle tasks
+/**
+ * Tracks the start of the EXECUTE_TYPE of Gradle task type.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.GradleTaskListener
+ */
 class GradleTaskManager : GradleTaskManagerExtension {
 
     //Only executed if gradle task has EXECUTE_TYPE type

@@ -2,6 +2,14 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network
 
 import com.google.gson.JsonObject
 
+/**
+ * Downloads plugin functionality setting from json file on Github.
+ *
+ * File name on Github: "FunctionalitySettings.json".
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.setting.FunctionalitySettings
+ */
+
 object FunctionalitySettingsLoader {
 
     //TODO: Set right Github url

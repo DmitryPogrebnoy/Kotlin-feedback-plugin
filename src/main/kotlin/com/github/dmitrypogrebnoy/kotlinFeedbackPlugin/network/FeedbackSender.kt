@@ -13,6 +13,12 @@ import org.apache.commons.httpclient.params.HttpMethodParams
 import java.io.File
 import java.io.IOException
 
+/**
+ * Sends user feedback as issues to YouTrack.
+ *
+ * Supports attaching files to an existing issue.
+ */
+
 object FeedbackSender {
 
     //TODO: Set right YouTrack repositoryApiUrl

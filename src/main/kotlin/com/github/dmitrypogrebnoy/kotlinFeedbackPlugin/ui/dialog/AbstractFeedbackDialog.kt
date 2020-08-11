@@ -1,7 +1,7 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.FeedbackDatesService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.CustomQuestion
 import com.intellij.ide.ui.laf.darcula.ui.DarculaLabelUI
@@ -22,6 +22,10 @@ import javax.swing.BorderFactory
 import javax.swing.JComponent
 import javax.swing.UIManager
 
+/**
+ * Base class for user types feedback dialogs.
+ */
+
 abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWrapper(project) {
 
     protected abstract val titleLabel: JBLabel
@@ -31,7 +35,7 @@ abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWr
     protected abstract val feedbackDialogPanel: DialogPanel
     protected abstract val customQuestionLabel: JBLabel?
     protected abstract val customQuestionTextArea: EditorTextField?
-    protected val dateFeedbackStatService: DateFeedbackStatService = service()
+    protected val feedbackDatesService: FeedbackDatesService = service()
     protected abstract val successSendFeedbackNotification: SuccessSendFeedbackNotification
 
     init {

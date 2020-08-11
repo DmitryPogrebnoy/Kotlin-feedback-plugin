@@ -11,11 +11,18 @@ import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.StatusBarWidgetFactory
 
+/**
+ * Feedback plugin widget factory.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget.FeedbackWidget
+ */
+
+
 /*
  * Set when the project window is created and is NOT updated when the statusBar.update Widget (id) is called.
  * Thus, the visibility and customization of the widget is only updated when the project is reopened.
  */
-class FeedbackStatusBarWidgetFactory: StatusBarWidgetFactory {
+class FeedbackStatusBarWidgetFactory : StatusBarWidgetFactory {
 
     private val currentUserType: UserType = UserTypeResolver.resolveUserType()
 

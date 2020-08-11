@@ -2,8 +2,8 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.CustomQuestionsLoader.getBeginnerCustomQuestion
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditStatisticService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditingStatisticsService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.FeedbackDatesService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.converter.TasksStatisticConverter
@@ -21,8 +21,8 @@ import com.intellij.openapi.project.DumbAware
 class StatisticPluginShow : AnAction(), DumbAware {
 
     private val tasksStatisticService: TasksStatisticService = service()
-    private val editRelevantStatisticService: EditStatisticService = service()
-    private val dateFeedbackStatService: DateFeedbackStatService = service()
+    private val editingStatisticsService: EditingStatisticsService = service()
+    private val feedbackDatesService: FeedbackDatesService = service()
     private val projectsStatisticService: ProjectsStatisticService = service()
     private val tasksStatisticConverter: TasksStatisticConverter = TasksStatisticConverter()
     private val gsonPrettyPrinter: Gson = GsonBuilder().disableHtmlEscaping()
@@ -52,14 +52,14 @@ class StatisticPluginShow : AnAction(), DumbAware {
                         ) + "<br>" +
                         "Count of Kotlin file editing - " +
                         "${gsonPrettyPrinter.toJson(
-                                editRelevantStatisticService.state!!.countEditKotlinFile)}<br>" +
+                                editingStatisticsService.state!!.countEditKotlinFile)}<br>" +
                         "Last date for show feedback notification " +
                         "${gsonPrettyPrinter.toJson(
-                                dateFeedbackStatService.state!!.dateShowFeedbackNotification)}<br>" +
+                                feedbackDatesService.state!!.dateShowFeedbackNotification)}<br>" +
                         "Last date for send feedback ${gsonPrettyPrinter.toJson(
-                                dateFeedbackStatService.state!!.dateSendFeedback)}<br>" +
+                                feedbackDatesService.state!!.dateSendFeedback)}<br>" +
                         "Last date for close or cancel feedback dialog ${gsonPrettyPrinter.toJson(
-                                dateFeedbackStatService.state!!.dateCloseFeedbackDialog)}<html>",
+                                feedbackDatesService.state!!.dateCloseFeedbackDialog)}<html>",
                 NotificationType.INFORMATION
         )
 

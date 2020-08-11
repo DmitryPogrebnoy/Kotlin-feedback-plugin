@@ -7,6 +7,13 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.ActiveUse
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.RequestFeedbackNotification
 import com.intellij.openapi.project.Project
 
+/**
+ * This object represents the active user type.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver
+ */
+
 object ActiveUserType : UserType {
 
     override val userTypeName: String = "Active Kotlin user"

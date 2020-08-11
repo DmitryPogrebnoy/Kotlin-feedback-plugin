@@ -7,9 +7,9 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsCo
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsConstantsLoader.getMinDurationGradleTask
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.ShowConstraintsConstantsLoader.getMinInactiveTime
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.DateFeedbackStatService
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.FeedbackDatesService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.show.DateFeedbackState
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.show.FeedbackDatesState
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.*
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver
 import com.intellij.openapi.components.service
@@ -17,6 +17,10 @@ import com.intellij.openapi.project.Project
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+
+/**
+ * Contains constants and functions that implement restrictions on displaying notifications.
+ */
 
 // 45 days
 private const val DEFAULT_MIN_DAYS_SINCE_SEND_FEEDBACK = 0
@@ -92,20 +96,32 @@ internal fun checkGradleRefreshTaskDuration(projectName: String): Boolean {
     } else false
 }
 
-internal fun checkFeedbackDate(): Boolean {
-    val dateFeedbackState: DateFeedbackState = service<DateFeedbackStatService>().state ?: return false
+internal fun checkFeedbackDatesForNotifications(): Boolean {
+    val feedbackDatesState: FeedbackDatesState = service<FeedbackDatesService>().state ?: return false
     val dayFromLastSendFeedback = Duration.between(
-            dateFeedbackState.dateSendFeedback.atStartOfDay(),
+            feedbackDatesState.dateSendFeedback.atStartOfDay(),
             LocalDate.now().atStartOfDay()).toDays()
     val dayFromLastCloseFeedbackDialog = Duration.between(
-            dateFeedbackState.dateCloseFeedbackDialog.atStartOfDay(),
+            feedbackDatesState.dateCloseFeedbackDialog.atStartOfDay(),
             LocalDate.now().atStartOfDay()).toDays()
     val dayFromLastShowFeedbackNotification = Duration.between(
-            dateFeedbackState.dateShowFeedbackNotification.atStartOfDay(),
+            feedbackDatesState.dateShowFeedbackNotification.atStartOfDay(),
             LocalDate.now().atStartOfDay()).toDays()
     return dayFromLastSendFeedback >= MIN_DAYS_SINCE_SEND_FEEDBACK
             && dayFromLastCloseFeedbackDialog >= MIN_DAYS_SINCE_CLOSE_FEEDBACK_DIALOG
             && dayFromLastShowFeedbackNotification >= MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION
+}
+
+internal fun checkFeedbackDatesForWidget(): Boolean {
+    val feedbackDatesState: FeedbackDatesState = service<FeedbackDatesService>().state ?: return false
+    val dayFromLastSendFeedback = Duration.between(
+            feedbackDatesState.dateSendFeedback.atStartOfDay(),
+            LocalDate.now().atStartOfDay()).toDays()
+    val dayFromLastCloseFeedbackDialog = Duration.between(
+            feedbackDatesState.dateCloseFeedbackDialog.atStartOfDay(),
+            LocalDate.now().atStartOfDay()).toDays()
+    return dayFromLastSendFeedback >= MIN_DAYS_SINCE_SEND_FEEDBACK
+            && dayFromLastCloseFeedbackDialog >= MIN_DAYS_SINCE_CLOSE_FEEDBACK_DIALOG
 }
 
 internal fun checkLastActive(lastActiveDateTime: LocalDateTime): Boolean {
@@ -113,31 +129,31 @@ internal fun checkLastActive(lastActiveDateTime: LocalDateTime): Boolean {
 }
 
 internal fun showCompileTimeNotificationIfPossible(project: Project) {
-    if (checkCompileTaskDuration(project.name) && checkFeedbackDate()) {
+    if (checkCompileTaskDuration(project.name) && checkFeedbackDatesForNotifications()) {
         UserTypeResolver.showFeedbackNotification(project)
     }
 }
 
 internal fun showGradleExecuteTaskTimeNotificationIfPossible(project: Project, taskName: String) {
-    if (checkGradleExecuteTaskDuration(project.name, taskName) && checkFeedbackDate()) {
+    if (checkGradleExecuteTaskDuration(project.name, taskName) && checkFeedbackDatesForNotifications()) {
         UserTypeResolver.showFeedbackNotification(project)
     }
 }
 
 internal fun showGradleRefreshTaskTimeNotificationIfPossible(project: Project) {
-    if (checkGradleRefreshTaskDuration(project.name) && checkFeedbackDate()) {
+    if (checkGradleRefreshTaskDuration(project.name) && checkFeedbackDatesForNotifications()) {
         UserTypeResolver.showFeedbackNotification(project)
     }
 }
 
 internal fun showGradleResolveTaskTimeNotificationIfPossible(project: Project) {
-    if (checkGradleResolveTaskDuration(project.name) && checkFeedbackDate()) {
+    if (checkGradleResolveTaskDuration(project.name) && checkFeedbackDatesForNotifications()) {
         UserTypeResolver.showFeedbackNotification(project)
     }
 }
 
 internal fun showInactiveTimeNotificationIfPossible(project: Project) {
-    if (checkLastActive(LastActive.lastActive) && checkFeedbackDate()) {
+    if (checkLastActive(LastActive.lastActive) && checkFeedbackDatesForNotifications()) {
         UserTypeResolver.showFeedbackNotification(project)
     }
 }

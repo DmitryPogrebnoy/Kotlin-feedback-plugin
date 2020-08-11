@@ -7,6 +7,13 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.BeginnerU
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.RequestFeedbackNotification
 import com.intellij.openapi.project.Project
 
+/**
+ * This object represents the beginner user type.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver
+ */
+
 object BeginnerUserType : UserType {
 
     override val userTypeName: String = "Beginner Kotlin user"

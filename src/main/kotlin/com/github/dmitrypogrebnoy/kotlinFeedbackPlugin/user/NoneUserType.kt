@@ -2,6 +2,13 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user
 
 import com.intellij.openapi.project.Project
 
+/**
+ * This object represents the none user type.
+ *
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver
+ */
+
 object NoneUserType : UserType {
 
     override val userTypeName: String = "None Kotlin user"
