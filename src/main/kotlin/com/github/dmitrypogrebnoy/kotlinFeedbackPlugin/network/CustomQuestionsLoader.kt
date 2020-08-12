@@ -32,6 +32,10 @@ object CustomQuestionsLoader {
         return getCustomQuestion("active_user_type")
     }
 
+    fun getLostCustomQuestion(): CustomQuestion? {
+        return getCustomQuestion("lost_user_type")
+    }
+
     /**
      * Parses question form json
      *

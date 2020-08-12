@@ -19,5 +19,12 @@
       "height": 50,
       "placeholder": "Test placeholder"
     }
+  },
+  "lost_user_type": {
+    "question": "*Custom question for lost user*",
+    "text_field_settings": {
+      "height": 50,
+      "placeholder": "Test placeholder"
+    }
   }
 }

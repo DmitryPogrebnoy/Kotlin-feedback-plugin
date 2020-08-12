@@ -31,6 +31,10 @@ object UserTypeResolver {
      *     - Enabled Kotlin plugin
      *     - Recently frequently edited Kotlin files
      *
+     *     Lost user type:
+     *     - The user previously edited Kotlin
+     *     - Recently, the user has not been editing Kotlin files
+     *
      *     None user type:
      *     - No conditions
      *
@@ -43,11 +47,11 @@ object UserTypeResolver {
      */
     fun resolveUserType(): UserType {
 
-        //TODO: Maybe add new fourth user type - left Kotlin user
         return when {
             BeginnerUserType.isUserSatisfiesUserType() -> BeginnerUserType
             ActiveUserType.isUserSatisfiesUserType() -> ActiveUserType
             SimpleUserType.isUserSatisfiesUserType() -> SimpleUserType
+            LostUserType.isUserSatisfiesUserType() -> LostUserType
             else -> NoneUserType
         }
     }

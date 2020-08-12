@@ -18,12 +18,12 @@ object UserConditionsConstantsLoader {
 
     private val jsonUserConstants: JsonObject? = getJsonFileFromGithub(userConstantsFileUrl)
 
-    fun getMinNumberRelevantEditingKotlinFile(): Int? {
-        return getConstant("min_number_relevant_editing_kotlin_file")
+    fun getMinNumberRelevantEditingKotlinFiles(): Int? {
+        return getConstant("min_number_relevant_editing_kotlin_files")
     }
 
-    fun getNumberRelevantDays(): Int? {
-        return getConstant("number_relevant_days")
+    fun getNumberRelevantDaysEditingKotlinFiles(): Int? {
+        return getConstant("number_relevant_days_editing_kotlin_files")
     }
 
     fun getNumberDaysForRecentProjects(): Int? {
@@ -32,6 +32,18 @@ object UserConditionsConstantsLoader {
 
     fun getNumberRecentKotlinProjectsWithoutVcs(): Int? {
         return getConstant("number_recent_kotlin_projects_without_vcs")
+    }
+
+    fun getNumberDaysWithoutEditingKotlinFiles(): Int? {
+        return getConstant("number_days_without_editing_kotlin_files")
+    }
+
+    fun getNumberDaysPreviousEditingKotlinFiles(): Int? {
+        return getConstant("number_days_previous_editing_kotlin_files")
+    }
+
+    fun getMinNumberPreviousEditingKotlinFiles(): Int? {
+        return getConstant("min_number_previous_editing_kotlin_files")
     }
 
     private fun getConstant(id: String): Int? {

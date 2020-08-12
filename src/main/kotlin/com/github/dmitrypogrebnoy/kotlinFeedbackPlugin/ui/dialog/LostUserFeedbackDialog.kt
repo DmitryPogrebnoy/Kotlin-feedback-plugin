@@ -3,7 +3,7 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.FeedbackSender
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.ActiveUserType
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.LostUserType
 import com.intellij.ide.ui.laf.darcula.ui.DarculaPanelUI
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -21,12 +21,12 @@ import javax.swing.Action
 import javax.swing.UIManager
 
 /**
- * Feedback dialog for active user type.
+ * Feedback dialog for lost user type.
  *
- * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.ActiveUserType
+ * @see com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.LostUserType
  */
 
-class ActiveUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(project) {
+class LostUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(project) {
 
     override val titleLabel: JBLabel
     override val sectionLabel: JBLabel
@@ -41,8 +41,8 @@ class ActiveUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
 
     init {
         setFieldsDialog()
-        //TODO: Remove " ACTIVE "
-        titleLabel = createTitleLabel(FeedbackBundle.message("dialog.default.content.title") + " ACTIVE ")
+        //TODO: Remove " LOST "
+        titleLabel = createTitleLabel(FeedbackBundle.message("dialog.default.content.title") + " LOST ")
         sectionLabel = createSectionLabel(FeedbackBundle.message("dialog.default.content.section"))
         feedbackLabel = createFeedbackLabel(FeedbackBundle.message("dialog.default.content.description.label"))
         feedbackTextArea = createFeedbackTextArea(
@@ -56,8 +56,8 @@ class ActiveUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
                 FeedbackBundle.message("dialog.default.content.attach.file.title"),
                 FeedbackBundle.message("dialog.default.content.attach.file.description")
         )
-        customQuestionLabel = createCustomQuestionLabel(ActiveUserType.customQuestion)
-        customQuestionTextArea = createCustomQuestionTextField(ActiveUserType.customQuestion)
+        customQuestionLabel = createCustomQuestionLabel(LostUserType.customQuestion)
+        customQuestionTextArea = createCustomQuestionTextField(LostUserType.customQuestion)
 
         feedbackDialogPanel = createFeedbackDialogPanel()
 
@@ -99,7 +99,7 @@ class ActiveUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
                     //then try to send feedback
                     try {
                         val newIssueId = FeedbackSender.createFeedbackIssue(
-                                ActiveUserType.userTypeName + "feedback",
+                                LostUserType.userTypeName + "feedback",
                                 textBody.toString()
                         )
                         if (attachFile.text.isNotEmpty()) {

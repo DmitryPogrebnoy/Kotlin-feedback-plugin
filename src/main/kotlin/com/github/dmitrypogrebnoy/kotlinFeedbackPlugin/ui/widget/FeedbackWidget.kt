@@ -13,7 +13,6 @@ import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.WindowManager
 import com.intellij.util.Consumer
 import java.awt.event.MouseEvent
-import java.time.LocalTime
 import javax.swing.Icon
 
 /**
@@ -44,7 +43,7 @@ class FeedbackWidget(private val currentUserType: UserType,
     }
 
     override fun getTooltipText(): String? {
-        return FeedbackBundle.message("widget.display.tooltip.text") + " " + LocalTime.now()
+        return FeedbackBundle.message("widget.display.tooltip.text")
     }
 
     override fun getIcon(): Icon? {

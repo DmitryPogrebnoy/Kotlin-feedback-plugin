@@ -87,13 +87,14 @@ class SimpleUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(projec
 
                     val textBody = StringBuilder()
                     textBody.append("Feedback ")
-                    textBody.append(feedbackTextArea.text)
                     textBody.append("\n\n")
+                    textBody.append(feedbackTextArea.text)
+                    textBody.append("\n\n\n")
                     if (customQuestionLabel != null) {
                         textBody.append(customQuestionLabel.text)
                     }
                     if (customQuestionTextArea != null) {
-                        textBody.append("\n" + customQuestionTextArea.text)
+                        textBody.append("\n\n" + customQuestionTextArea.text)
                     }
 
                     //then try to send feedback

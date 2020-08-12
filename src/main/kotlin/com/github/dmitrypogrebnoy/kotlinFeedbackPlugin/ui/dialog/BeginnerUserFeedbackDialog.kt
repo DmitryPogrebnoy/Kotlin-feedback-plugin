@@ -4,7 +4,7 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.FeedbackSender
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.ActiveUserType
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.SimpleUserType
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.BeginnerUserType
 import com.intellij.ide.ui.laf.darcula.ui.DarculaPanelUI
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
@@ -87,19 +87,20 @@ class BeginnerUserFeedbackDialog(project: Project) : AbstractFeedbackDialog(proj
 
                     val textBody = StringBuilder()
                     textBody.append("Feedback ")
-                    textBody.append(feedbackTextArea.text)
                     textBody.append("\n\n")
+                    textBody.append(feedbackTextArea.text)
+                    textBody.append("\n\n\n")
                     if (customQuestionLabel != null) {
                         textBody.append(customQuestionLabel.text)
                     }
                     if (customQuestionTextArea != null) {
-                        textBody.append("\n" + customQuestionTextArea.text)
+                        textBody.append("\n\n" + customQuestionTextArea.text)
                     }
 
                     //then try to send feedback
                     try {
                         val newIssueId = FeedbackSender.createFeedbackIssue(
-                                SimpleUserType.userTypeName + "feedback",
+                                BeginnerUserType.userTypeName + "feedback",
                                 textBody.toString()
                         )
                         if (attachFile.text.isNotEmpty()) {

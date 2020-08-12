@@ -1,9 +1,12 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user
 
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getMinNumberRelevantEditingKotlinFile
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getMinNumberPreviousEditingKotlinFiles
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getMinNumberRelevantEditingKotlinFiles
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getNumberDaysForRecentProjects
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getNumberDaysPreviousEditingKotlinFiles
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getNumberDaysWithoutEditingKotlinFiles
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getNumberRecentKotlinProjectsWithoutVcs
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getNumberRelevantDays
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.UserConditionsConstantsLoader.getNumberRelevantDaysEditingKotlinFiles
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.editor.EditInfo
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditingStatisticsService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService
@@ -27,10 +30,10 @@ private const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
 private const val EDU_TOOLS_PLUGIN_ID = "com.jetbrains.edu"
 
 // 5 times
-private const val DEFAULT_MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE = 1
+private const val DEFAULT_MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILES = 1
 
 // 10 days
-private const val DEFAULT_NUMBER_RELEVANT_DAYS = 0
+private const val DEFAULT_NUMBER_RELEVANT_DAYS_EDITING_KOTLIN_FILES = 0
 
 // 7 days
 private const val DEFAULT_NUMBER_DAYS_FOR_RECENT_PROJECTS = 0
@@ -38,11 +41,20 @@ private const val DEFAULT_NUMBER_DAYS_FOR_RECENT_PROJECTS = 0
 // 3
 private const val DEFAULT_NUMBER_RECENT_KOTLIN_PROJECTS_WITHOUT_VCS = 0
 
+// 7
+private const val DEFAULT_NUMBER_DAYS_WITHOUT_EDITING_KOTLIN_FILES = 0
 
-internal val MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE: Int = getMinNumberRelevantEditingKotlinFile()
-        ?: DEFAULT_MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE
+// 14
+private const val DEFAULT_NUMBER_DAYS_PREVIOUS_EDITING_KOTLIN_FILES = 0
 
-internal val NUMBER_RELEVANT_DAYS: Int = getNumberRelevantDays() ?: DEFAULT_NUMBER_RELEVANT_DAYS
+// 10
+private const val DEFAULT_MIN_NUMBER_PREVIOUS_EDITING_KOTLIN_FILES = 0
+
+internal val MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILES: Int = getMinNumberRelevantEditingKotlinFiles()
+        ?: DEFAULT_MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILES
+
+internal val NUMBER_RELEVANT_DAYS_EDITING_KOTLIN_FILES: Int = getNumberRelevantDaysEditingKotlinFiles()
+        ?: DEFAULT_NUMBER_RELEVANT_DAYS_EDITING_KOTLIN_FILES
 
 internal val NUMBER_DAYS_FOR_RECENT_PROJECTS: Int = getNumberDaysForRecentProjects()
         ?: DEFAULT_NUMBER_DAYS_FOR_RECENT_PROJECTS
@@ -50,17 +62,50 @@ internal val NUMBER_DAYS_FOR_RECENT_PROJECTS: Int = getNumberDaysForRecentProjec
 internal val NUMBER_RECENT_KOTLIN_PROJECTS_WITHOUT_VCS: Int = getNumberRecentKotlinProjectsWithoutVcs()
         ?: DEFAULT_NUMBER_RECENT_KOTLIN_PROJECTS_WITHOUT_VCS
 
+internal val NUMBER_DAYS_WITHOUT_EDITING_KOTLIN_FILES: Int = getNumberDaysWithoutEditingKotlinFiles()
+        ?: DEFAULT_NUMBER_DAYS_WITHOUT_EDITING_KOTLIN_FILES
+
+internal val NUMBER_DAYS_PREVIOUS_EDITING_KOTLIN_FILES: Int = getNumberDaysPreviousEditingKotlinFiles()
+        ?: DEFAULT_NUMBER_DAYS_PREVIOUS_EDITING_KOTLIN_FILES
+
+internal val MIN_NUMBER_PREVIOUS_EDITING_KOTLIN_FILES: Int = getMinNumberPreviousEditingKotlinFiles()
+        ?: DEFAULT_MIN_NUMBER_PREVIOUS_EDITING_KOTLIN_FILES
 
 internal fun checkRelevantNumberKotlinFileEditing(): Boolean {
     val editorState: Map<LocalDate, EditInfo> = service<EditingStatisticsService>().state?.countEditKotlinFile
             ?: return false
-    val startRelevantDays = LocalDate.now().minusDays(NUMBER_RELEVANT_DAYS.toLong())
+    val startRelevantDays = LocalDate.now().minusDays(NUMBER_RELEVANT_DAYS_EDITING_KOTLIN_FILES.toLong())
     val numberRelevantEditKotlin = editorState.entries.fold(0) { acc: Long, entry: Map.Entry<LocalDate, EditInfo> ->
         if (entry.key >= startRelevantDays && entry.key <= LocalDate.now()) {
             acc + entry.value.numberEditing
         } else acc
     }
-    return numberRelevantEditKotlin >= MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILE
+    return numberRelevantEditKotlin >= MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILES
+}
+
+internal fun checkDaysWithoutEditingKotlinFiles(): Boolean {
+    val editorState: Map<LocalDate, EditInfo> = service<EditingStatisticsService>().state?.countEditKotlinFile
+            ?: return false
+    val startRelevantDays = LocalDate.now().minusDays(NUMBER_DAYS_WITHOUT_EDITING_KOTLIN_FILES.toLong())
+    editorState.keys.forEach {
+        if (it >= startRelevantDays && it <= LocalDate.now()) {
+            return false
+        }
+    }
+    return true
+}
+
+internal fun checkPreviousNumberEditingKotlinFiles(): Boolean {
+    val editorState: Map<LocalDate, EditInfo> = service<EditingStatisticsService>().state?.countEditKotlinFile
+            ?: return false
+    val endPreviousDays = LocalDate.now().minusDays(NUMBER_DAYS_WITHOUT_EDITING_KOTLIN_FILES.toLong())
+    val startPreviousDays = endPreviousDays.minusDays(NUMBER_DAYS_PREVIOUS_EDITING_KOTLIN_FILES.toLong())
+    val numberPreviousEditingKotlinFiles: Long = editorState.entries.fold(0L) { acc: Long, entry ->
+        if (entry.key >= startPreviousDays && entry.key <= endPreviousDays) {
+            acc + entry.value.numberEditing
+        } else acc
+    }
+    return numberPreviousEditingKotlinFiles >= MIN_NUMBER_PREVIOUS_EDITING_KOTLIN_FILES
 }
 
 internal fun needCollectUserFeedback(): Boolean {
