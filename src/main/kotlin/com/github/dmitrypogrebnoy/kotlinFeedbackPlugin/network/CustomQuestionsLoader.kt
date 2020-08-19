@@ -48,10 +48,9 @@ object CustomQuestionsLoader {
                 val beginnerUserInfo: JsonObject = questionsJsonString[userType].asJsonObject
                 val questionString: String = beginnerUserInfo["question"].asString
                 val textFieldSettings: JsonObject = beginnerUserInfo["text_field_settings"].asJsonObject
-                val textFieldWidth: Int = textFieldSettings["height"].asInt
                 val textFieldPlaceholder: String = textFieldSettings["placeholder"].asString
                 if (questionString.isNotEmpty()) {
-                    CustomQuestion(questionString, QuestionTextFieldSettings(textFieldWidth, textFieldPlaceholder))
+                    CustomQuestion(questionString, QuestionTextFieldSettings(textFieldPlaceholder))
                 } else {
                     null
                 }

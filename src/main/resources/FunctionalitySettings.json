@@ -1,5 +1,5 @@
 {
-  "enable_notification": true,
+  "enable_notification": false,
   "enable_widget_icon_color": true,
   "enable_widget": true
 }

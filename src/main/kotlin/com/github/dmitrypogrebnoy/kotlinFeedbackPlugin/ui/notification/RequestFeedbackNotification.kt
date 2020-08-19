@@ -7,6 +7,7 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.IconLoader
 import java.time.LocalDate
 
 /**
@@ -18,9 +19,11 @@ class RequestFeedbackNotification(
         descriptionText: String = FeedbackBundle.message("request.feedback.default.notification.content")
 ) : Notification(
         KotlinFeedbackNotificationGroup.group.displayId,
-        titleText,
+        //TODO: Set right icon
+        IconLoader.getIcon("/kotlin.svg"),
+        titleText, "",
         descriptionText,
-        NotificationType.INFORMATION
+        NotificationType.INFORMATION, null
 ) {
 
     //Tracking showing notification

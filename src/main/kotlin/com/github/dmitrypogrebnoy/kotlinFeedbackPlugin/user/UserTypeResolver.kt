@@ -12,23 +12,19 @@ object UserTypeResolver {
      *
      *     All user types, except None user type,
      *     must satisfies the following conditions:
-     *     - Installed Kotlin plugin
      *     - Collection of statistics usage functions is enabled
      *
      *     Beginner user type:
-     *     - Enabled Kotlin plugin
      *     - Recently frequently edited Kotlin files
      *     - And at least one condition of the following:
      *         - Installed and enabled EduTools plugin
      *         - Recently often opened Kotlin projects without VCS
      *
      *     Active user type:
-     *     - Enabled Kotlin plugin
      *     - Recently frequently edited Kotlin files
      *     - Installed EAP version of Kotlin plugin
      *
      *     Simple user type:
-     *     - Enabled Kotlin plugin
      *     - Recently frequently edited Kotlin files
      *
      *     Lost user type:
@@ -45,7 +41,9 @@ object UserTypeResolver {
      * There is no need to collect feedback from such users.
      *
      */
-    fun resolveUserType(): UserType {
+    val currentUserType: UserType = resolveUserType()
+
+    private fun resolveUserType(): UserType {
 
         return when {
             BeginnerUserType.isUserSatisfiesUserType() -> BeginnerUserType
@@ -57,10 +55,10 @@ object UserTypeResolver {
     }
 
     fun showFeedbackNotification(project: Project) {
-        resolveUserType().showFeedbackNotification(project)
+        currentUserType.showFeedbackNotification(project)
     }
 
     fun showFeedbackDialog(project: Project) {
-        resolveUserType().showFeedbackDialog(project)
+        currentUserType.showFeedbackDialog(project)
     }
 }

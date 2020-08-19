@@ -2,28 +2,24 @@
   "active_user_type": {
     "question": "*Custom question for active user*",
     "text_field_settings": {
-      "height": 50,
       "placeholder": "Test placeholder"
     }
   },
   "simple_user_type": {
     "question": "*Custom questions for simple user*",
     "text_field_settings": {
-      "height": 50,
       "placeholder": "Test placeholder"
     }
   },
   "beginner_user_type": {
     "question": "*Custom questions for beginner user*",
     "text_field_settings": {
-      "height": 50,
       "placeholder": "Test placeholder"
     }
   },
   "lost_user_type": {
     "question": "*Custom question for lost user*",
     "text_field_settings": {
-      "height": 50,
       "placeholder": "Test placeholder"
     }
   }

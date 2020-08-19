@@ -1,9 +1,9 @@
 {
-  "min_number_relevant_editing_kotlin_files": 1,
-  "number_relevant_days_editing_kotlin_files": 1,
-  "number_days_for_recent_projects": 0,
-  "number_recent_kotlin_projects_without_vcs": 0,
-  "number_days_without_editing_kotlin_files": 0,
-  "number_days_previous_editing_kotlin_files": 0,
-  "min_number_previous_editing_kotlin_files": 0
+  "min_number_relevant_editing_kotlin_files": 100,
+  "number_relevant_days_editing_kotlin_files": 10,
+  "number_days_for_recent_projects": 7,
+  "number_recent_kotlin_projects_without_vcs": 3,
+  "number_days_without_editing_kotlin_files": 7,
+  "number_days_previous_editing_kotlin_files": 14,
+  "min_number_previous_editing_kotlin_files": 20
 }

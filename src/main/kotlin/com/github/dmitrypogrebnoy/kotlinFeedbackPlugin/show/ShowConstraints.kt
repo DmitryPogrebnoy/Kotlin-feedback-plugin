@@ -23,19 +23,19 @@ import java.time.LocalDateTime
  */
 
 // 45 days
-private const val DEFAULT_MIN_DAYS_SINCE_SEND_FEEDBACK = 0
+private const val DEFAULT_MIN_DAYS_SINCE_SEND_FEEDBACK = 45
 
-// 90 days
-private const val DEFAULT_MIN_DAYS_SINCE_CLOSE_FEEDBACK_DIALOG = 2
+// 60 days
+private const val DEFAULT_MIN_DAYS_SINCE_CLOSE_FEEDBACK_DIALOG = 60
 
-// 5 days
-private const val DEFAULT_MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION = 2
+// 15 days
+private const val DEFAULT_MIN_DAYS_SINCE_SHOW_FEEDBACK_NOTIFICATION = 15
 
 // 2 minutes
 private const val DEFAULT_MIN_DURATION_COMPILE_TASK = 2
 
 // 2 minutes
-private const val DEFAULT_MIN_DURATION_GRADLE_TASK = 0
+private const val DEFAULT_MIN_DURATION_GRADLE_TASK = 2
 
 // 20 minutes
 private const val DEFAULT_MIN_INACTIVE_TIME = 20

@@ -3,7 +3,7 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.setting.FunctionalitySettings.enableWidgetIconColor
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.checkFeedbackDatesForWidget
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver.currentUserType
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
@@ -25,8 +25,7 @@ import javax.swing.Icon
  * Set when the project window is created and is updated when the statusBar.update Widget (id) is called.
  * Thus, widget updating when DataFeedbackState changed. See DataFeedbackState for details.
  */
-class FeedbackWidget(private val currentUserType: UserType,
-                     private val project: Project) : StatusBarWidget, StatusBarWidget.IconPresentation {
+class FeedbackWidget(private val project: Project) : StatusBarWidget, StatusBarWidget.IconPresentation {
 
     companion object {
         const val ID = "Kotlin Feedback Widget"

@@ -21,9 +21,7 @@ object BeginnerUserType : UserType {
     override var customQuestion: CustomQuestion? = getBeginnerCustomQuestion()
 
     override fun isUserSatisfiesUserType(): Boolean {
-        return needCollectUserFeedback()
-                && isKotlinPluginEnabled()
-                && checkRelevantNumberKotlinFileEditing()
+        return isSendFusEnabled() && checkRelevantNumberKotlinFileEditing()
                 && (isEduToolsPluginEnabled() || openedManyRecentProjectsWithoutVcs())
     }
 

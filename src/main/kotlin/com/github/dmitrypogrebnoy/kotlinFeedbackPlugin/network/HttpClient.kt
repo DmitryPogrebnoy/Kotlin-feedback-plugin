@@ -7,7 +7,6 @@ import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.methods.GetMethod
 import org.apache.commons.httpclient.params.HttpConnectionParams
 import org.apache.commons.httpclient.params.HttpMethodParams
-import java.io.IOException
 import java.util.*
 
 /**
@@ -59,9 +58,7 @@ object HttpClient {
             val contentJsonFile = responseBodyJson["content"].asString
             val decodedJsonFile = Base64.getMimeDecoder().decode(contentJsonFile).toString(Charsets.UTF_8)
             return JsonParser.parseString(decodedJsonFile).asJsonObject
-        } catch (e: IOException) {
-            println(e.message)
-        } catch (e: IllegalArgumentException) {
+        } catch (e: RuntimeException) {
             println(e.message)
         } finally {
             getJsonFileMethod.releaseConnection()

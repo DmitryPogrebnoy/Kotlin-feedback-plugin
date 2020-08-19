@@ -1,18 +1,13 @@
 package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action
 
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.CustomQuestionsLoader.getBeginnerCustomQuestion
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.active.LastActive
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditingStatisticsService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.FeedbackDatesService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.task.converter.TasksStatisticConverter
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.KotlinFeedbackNotificationGroup
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.*
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.LostUserType
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
@@ -30,7 +25,7 @@ class StatisticPluginShow : AnAction(), DumbAware {
 
 
     override fun actionPerformed(e: AnActionEvent) {
-
+        /*
         val notification = Notification(
                 KotlinFeedbackNotificationGroup.group.displayId,
                 "Collected statistic",
@@ -65,6 +60,8 @@ class StatisticPluginShow : AnAction(), DumbAware {
 
         notification.notify(e.project)
 
+         */
+        LostUserType.showFeedbackDialog(e.project!!)
 
     }
 }

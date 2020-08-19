@@ -29,26 +29,26 @@ private const val KOTLIN_PLUGIN_ID = "org.jetbrains.kotlin"
 
 private const val EDU_TOOLS_PLUGIN_ID = "com.jetbrains.edu"
 
-// 5 times
-private const val DEFAULT_MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILES = 1
+// 100 times
+private const val DEFAULT_MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILES = 100
 
 // 10 days
-private const val DEFAULT_NUMBER_RELEVANT_DAYS_EDITING_KOTLIN_FILES = 0
+private const val DEFAULT_NUMBER_RELEVANT_DAYS_EDITING_KOTLIN_FILES = 10
 
 // 7 days
-private const val DEFAULT_NUMBER_DAYS_FOR_RECENT_PROJECTS = 0
+private const val DEFAULT_NUMBER_DAYS_FOR_RECENT_PROJECTS = 7
 
 // 3
-private const val DEFAULT_NUMBER_RECENT_KOTLIN_PROJECTS_WITHOUT_VCS = 0
+private const val DEFAULT_NUMBER_RECENT_KOTLIN_PROJECTS_WITHOUT_VCS = 3
 
 // 7
-private const val DEFAULT_NUMBER_DAYS_WITHOUT_EDITING_KOTLIN_FILES = 0
+private const val DEFAULT_NUMBER_DAYS_WITHOUT_EDITING_KOTLIN_FILES = 7
 
 // 14
-private const val DEFAULT_NUMBER_DAYS_PREVIOUS_EDITING_KOTLIN_FILES = 0
+private const val DEFAULT_NUMBER_DAYS_PREVIOUS_EDITING_KOTLIN_FILES = 14
 
-// 10
-private const val DEFAULT_MIN_NUMBER_PREVIOUS_EDITING_KOTLIN_FILES = 0
+// 20
+private const val DEFAULT_MIN_NUMBER_PREVIOUS_EDITING_KOTLIN_FILES = 20
 
 internal val MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILES: Int = getMinNumberRelevantEditingKotlinFiles()
         ?: DEFAULT_MIN_NUMBER_RELEVANT_EDITING_KOTLIN_FILES
@@ -106,10 +106,6 @@ internal fun checkPreviousNumberEditingKotlinFiles(): Boolean {
         } else acc
     }
     return numberPreviousEditingKotlinFiles >= MIN_NUMBER_PREVIOUS_EDITING_KOTLIN_FILES
-}
-
-internal fun needCollectUserFeedback(): Boolean {
-    return isKotlinPluginInstalled() && isSendFusEnabled()
 }
 
 internal fun isKotlinPluginInstalled(): Boolean {

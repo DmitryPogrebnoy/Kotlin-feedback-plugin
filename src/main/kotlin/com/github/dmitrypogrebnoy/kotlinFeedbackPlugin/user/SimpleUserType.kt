@@ -21,9 +21,7 @@ object SimpleUserType : UserType {
     override var customQuestion: CustomQuestion? = getSimpleCustomQuestion()
 
     override fun isUserSatisfiesUserType(): Boolean {
-        return needCollectUserFeedback()
-                && isKotlinPluginEnabled()
-                && checkRelevantNumberKotlinFileEditing()
+        return isSendFusEnabled() && checkRelevantNumberKotlinFileEditing()
     }
 
     override fun showFeedbackNotification(project: Project) {

@@ -20,8 +20,8 @@ object LostUserType : UserType {
     override var customQuestion: CustomQuestion? = getLostCustomQuestion()
 
     override fun isUserSatisfiesUserType(): Boolean {
-        return needCollectUserFeedback()
-                && checkDaysWithoutEditingKotlinFiles() && checkPreviousNumberEditingKotlinFiles()
+        return isSendFusEnabled() && checkDaysWithoutEditingKotlinFiles()
+                && checkPreviousNumberEditingKotlinFiles()
     }
 
     override fun showFeedbackNotification(project: Project) {

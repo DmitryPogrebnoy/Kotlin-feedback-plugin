@@ -3,8 +3,7 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.setting.FunctionalitySettings.enableWidget
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.NoneUserType
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
-import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserTypeResolver.currentUserType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.StatusBar
@@ -23,8 +22,6 @@ import com.intellij.openapi.wm.StatusBarWidgetFactory
  * Thus, the visibility and customization of the widget is only updated when the project is reopened.
  */
 class FeedbackStatusBarWidgetFactory : StatusBarWidgetFactory {
-
-    private val currentUserType: UserType = UserTypeResolver.resolveUserType()
 
     override fun getId(): String {
         return FeedbackWidget.ID
@@ -47,7 +44,7 @@ class FeedbackStatusBarWidgetFactory : StatusBarWidgetFactory {
     }
 
     override fun createWidget(project: Project): StatusBarWidget {
-        return FeedbackWidget(currentUserType, project)
+        return FeedbackWidget(project)
     }
 
     override fun canBeEnabledOn(statusBar: StatusBar): Boolean {

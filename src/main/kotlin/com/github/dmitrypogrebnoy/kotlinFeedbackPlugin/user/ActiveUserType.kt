@@ -21,7 +21,7 @@ object ActiveUserType : UserType {
     override var customQuestion: CustomQuestion? = getActiveCustomQuestion()
 
     override fun isUserSatisfiesUserType(): Boolean {
-        return needCollectUserFeedback() && isKotlinPluginEAP() && isKotlinPluginEnabled()
+        return isSendFusEnabled() && isKotlinPluginEAP()
                 && checkRelevantNumberKotlinFileEditing()
     }
 
