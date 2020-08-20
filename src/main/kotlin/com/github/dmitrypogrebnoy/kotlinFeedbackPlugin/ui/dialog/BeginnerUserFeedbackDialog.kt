@@ -2,6 +2,7 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.generateSuccessSendFeedbackNotification
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.ActiveUserType
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.BeginnerUserType
 import com.intellij.openapi.project.Project
@@ -71,7 +72,7 @@ class BeginnerUserFeedbackDialog(project: Project) : AttachedFileFeedbackDialog(
 
         feedbackDialogPanel = createFeedbackDialogPanel()
 
-        successSendFeedbackNotification = SuccessSendFeedbackNotification()
+        successSendFeedbackNotification = generateSuccessSendFeedbackNotification()
 
         super.init()
         startTrackingValidation()

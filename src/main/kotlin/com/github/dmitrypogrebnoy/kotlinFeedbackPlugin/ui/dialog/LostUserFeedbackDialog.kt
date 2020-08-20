@@ -2,6 +2,7 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog
 
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
+import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.generateSuccessSendFeedbackNotification
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.LostUserType
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.SimpleUserType
 import com.intellij.openapi.project.Project
@@ -71,7 +72,7 @@ class LostUserFeedbackDialog(project: Project) : AttachedFileFeedbackDialog(proj
 
         feedbackDialogPanel = createFeedbackDialogPanel()
 
-        successSendFeedbackNotification = SuccessSendFeedbackNotification()
+        successSendFeedbackNotification = generateSuccessSendFeedbackNotification()
 
         super.init()
         startTrackingValidation()
