@@ -3,7 +3,6 @@ package com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.dialog
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.bundle.FeedbackBundle
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.network.FeedbackSender
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
-import com.intellij.ide.ui.laf.darcula.ui.DarculaLabelUI
 import com.intellij.ide.ui.laf.darcula.ui.DarculaPanelUI
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
@@ -12,6 +11,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.EditorTextField
 import com.intellij.ui.components.JBLabel
+import com.intellij.ui.layout.GrowPolicy
 import com.intellij.ui.layout.panel
 import java.awt.Dimension
 import java.awt.Font
@@ -33,7 +33,6 @@ abstract class AttachedFileFeedbackDialog(project: Project) : AbstractFeedbackDi
 
     protected open fun createAttachFileLabel(labelText: String): JBLabel {
         return JBLabel(labelText).apply {
-            ui = DarculaLabelUI()
             font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
         }
     }
@@ -60,32 +59,11 @@ abstract class AttachedFileFeedbackDialog(project: Project) : AbstractFeedbackDi
                     close(OK_EXIT_CODE)
                     successSendFeedbackNotification.notify(project)
 
-                    val textBody = StringBuilder()
-                    textBody.append(firstFeedbackQuestionLabel.text)
-                    textBody.append("\n\n")
-                    textBody.append(firstFeedbackQuestionTextArea.text)
-                    textBody.append("\n\n")
-                    textBody.append(secondFeedbackQuestionLabel.text)
-                    textBody.append("\n\n")
-                    textBody.append(secondFeedbackQuestionTextArea.text)
-                    textBody.append("\n\n")
-                    if (customQuestionLabel != null) {
-                        textBody.append(customQuestionLabel!!.text)
-                    } else {
-                        textBody.append(thirdFeedbackQuestionLabel.text)
-                    }
-                    textBody.append("\n\n")
-                    if (customQuestionTextArea != null) {
-                        textBody.append("\n\n" + customQuestionTextArea!!.text)
-                    } else {
-                        textBody.append(thirdFeedbackQuestionTextArea.text)
-                    }
-
                     //then try to send feedback
                     try {
                         val newIssueId = FeedbackSender.createFeedbackIssue(
                                 userType.userTypeName + " feedback",
-                                textBody.toString()
+                                getFormattedFeedback()
                         )
                         if (attachFile.text.isNotEmpty()) {
                             val file = File(attachFile.text)
@@ -147,6 +125,12 @@ abstract class AttachedFileFeedbackDialog(project: Project) : AbstractFeedbackDi
             row {
                 attachFile()
             }
+            row {
+                cell {
+                    emailLabel()
+                    emailTextField().growPolicy(GrowPolicy.MEDIUM_TEXT)
+                }
+            }
         }
 
         return dialogPanel.apply {
@@ -168,13 +152,66 @@ abstract class AttachedFileFeedbackDialog(project: Project) : AbstractFeedbackDi
         if (firstFeedbackQuestionTextArea.text.isEmpty()) {
             validationInfoList.add(
                     ValidationInfo(
-                            FeedbackBundle.message("dialog.default.validate.description.empty"),
+                            FeedbackBundle.message("dialog.default.validate.first.feedback.question.empty"),
                             firstFeedbackQuestionTextArea
                     )
             )
         }
 
+        if (emailTextField.text.isNotEmpty() && !isValidEmail(emailTextField.text)) {
+            validationInfoList.add(
+                    ValidationInfo(
+                            FeedbackBundle.message("dialog.default.validate.email"),
+                            emailTextField
+                    )
+            )
+        }
+
         return validationInfoList
+    }
+
+    private fun getFormattedFeedback(): String {
+        return with(StringBuilder()) {
+            //Do not check for emptiness because it is checked during validation
+            append("**")
+            append(firstFeedbackQuestionLabel.text)
+            append("**")
+            append("\n")
+            append(firstFeedbackQuestionTextArea.text)
+            append("\n\n")
+            if (secondFeedbackQuestionTextArea.text.isNotEmpty()) {
+                append("**")
+                append(secondFeedbackQuestionLabel.text)
+                append("**")
+                append("\n")
+                append(secondFeedbackQuestionTextArea.text)
+                append("\n\n")
+            }
+            if (customQuestionLabel != null && customQuestionTextArea != null
+                    && customQuestionTextArea!!.text.isNotEmpty()) {
+                append("**")
+                append(customQuestionLabel!!.text)
+                append("**")
+                append("\n")
+                append(customQuestionTextArea!!.text)
+                append("\n\n")
+            } else if (thirdFeedbackQuestionTextArea.text.isNotEmpty()) {
+                append("**")
+                append(thirdFeedbackQuestionLabel.text)
+                append("**")
+                append("\n")
+                append(thirdFeedbackQuestionTextArea.text)
+                append("\n\n")
+            }
+            if (emailTextField.text.isNotEmpty()) {
+                append("**")
+                append(emailLabel.text)
+                append("**")
+                append(": ")
+                append(emailTextField.text)
+            }
+            toString()
+        }
     }
 
     private fun checkAttachFile(): ValidationInfo? {
@@ -190,5 +227,18 @@ abstract class AttachedFileFeedbackDialog(project: Project) : AbstractFeedbackDi
             }
         }
         return null
+    }
+
+    private fun isValidEmail(text: String): Boolean {
+        val emailRegex = Regex(
+                "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                        "\\@" +
+                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                        "(" +
+                        "\\." +
+                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                        ")+"
+        )
+        return emailRegex.matches(text)
     }
 }

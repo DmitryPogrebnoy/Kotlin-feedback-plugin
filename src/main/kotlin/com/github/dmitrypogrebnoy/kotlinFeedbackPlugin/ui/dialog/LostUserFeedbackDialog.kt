@@ -31,6 +31,8 @@ class LostUserFeedbackDialog(project: Project) : AttachedFileFeedbackDialog(proj
     override val customQuestionTextArea: EditorTextField?
     override val attachFileLabel: JBLabel
     override val attachFile: TextFieldWithBrowseButton
+    override val emailLabel: JBLabel
+    override val emailTextField: EditorTextField
     override val successSendFeedbackNotification: SuccessSendFeedbackNotification
 
     init {
@@ -56,14 +58,16 @@ class LostUserFeedbackDialog(project: Project) : AttachedFileFeedbackDialog(proj
                 FeedbackBundle.message("dialog.default.content.description.third.feedback.question.textarea.placeholder")
         )
         thirdFeedbackQuestionLabel.labelFor = thirdFeedbackQuestionTextArea
+        customQuestionLabel = createCustomQuestionLabel(LostUserType.customQuestion)
+        customQuestionTextArea = createCustomQuestionTextField(LostUserType.customQuestion)
         attachFileLabel = createAttachFileLabel(FeedbackBundle.message("dialog.default.content.attach.file.label"))
         attachFile = createAttachFileChooser(
                 project,
                 FeedbackBundle.message("dialog.default.content.attach.file.title"),
                 FeedbackBundle.message("dialog.default.content.attach.file.description")
         )
-        customQuestionLabel = createCustomQuestionLabel(LostUserType.customQuestion)
-        customQuestionTextArea = createCustomQuestionTextField(LostUserType.customQuestion)
+        emailLabel = createEmailLabel()
+        emailTextField = createEmailTextField()
 
         feedbackDialogPanel = createFeedbackDialogPanel()
 

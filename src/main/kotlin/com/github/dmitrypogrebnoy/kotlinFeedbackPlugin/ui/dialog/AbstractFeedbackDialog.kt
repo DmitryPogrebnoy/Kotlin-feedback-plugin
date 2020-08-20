@@ -5,9 +5,7 @@ import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.FeedbackDa
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.SuccessSendFeedbackNotification
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.CustomQuestion
 import com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.user.UserType
-import com.intellij.ide.ui.laf.darcula.ui.DarculaLabelUI
 import com.intellij.openapi.components.service
-import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.DialogWrapper
@@ -38,6 +36,8 @@ abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWr
     protected abstract val feedbackDialogPanel: DialogPanel
     protected abstract val customQuestionLabel: JBLabel?
     protected abstract val customQuestionTextArea: EditorTextField?
+    protected abstract val emailLabel: JBLabel
+    protected abstract val emailTextField: EditorTextField
     protected val feedbackDatesService: FeedbackDatesService = service()
     protected abstract val successSendFeedbackNotification: SuccessSendFeedbackNotification
 
@@ -54,7 +54,6 @@ abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWr
 
     protected open fun createTitleLabel(labelText: String): JBLabel {
         return JBLabel(labelText).apply {
-            ui = DarculaLabelUI()
             font = UIManager.getFont("Label.font").deriveFont(Font.BOLD, 20F)
             //TODO: Set right icon
             icon = IconLoader.getIcon("/kotlin.svg")
@@ -63,20 +62,18 @@ abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWr
 
     protected open fun createSectionLabel(labelText: String): JBLabel {
         return JBLabel(labelText).apply {
-            ui = DarculaLabelUI()
             font = UIManager.getFont("Label.font")
         }
     }
 
     protected open fun createFeedbackLabel(labelText: String): JBLabel {
         return JBLabel(labelText).apply {
-            ui = DarculaLabelUI()
             font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
         }
     }
 
     protected open fun createFeedbackTextArea(project: Project, placeHolderText: String): EditorTextField {
-        return EditorTextField(project, PlainTextFileType.INSTANCE).apply {
+        return EditorTextField().apply {
             addSettingsProvider {
                 it.settings.isUseSoftWraps = true
                 it.setBorder(
@@ -94,14 +91,13 @@ abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWr
 
     protected open fun createCustomQuestionLabel(customQuestion: CustomQuestion?): JBLabel? {
         return JBLabel(customQuestion?.question ?: return null).apply {
-            ui = DarculaLabelUI()
             font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
         }
     }
 
     protected open fun createCustomQuestionTextField(customQuestion: CustomQuestion?): EditorTextField? {
         return if (customQuestion != null) {
-            EditorTextField(project, PlainTextFileType.INSTANCE).apply {
+            EditorTextField().apply {
                 addSettingsProvider {
                     it.settings.isUseSoftWraps = true
                     it.setBorder(
@@ -116,6 +112,18 @@ abstract class AbstractFeedbackDialog(protected val project: Project) : DialogWr
                 setOneLineMode(false)
             }
         } else null
+    }
+
+    protected open fun createEmailLabel(): JBLabel {
+        return JBLabel(FeedbackBundle.message("dialog.default.content.email.label")).apply {
+            font = UIManager.getFont("Label.font").deriveFont(Font.BOLD)
+        }
+    }
+
+    protected open fun createEmailTextField(): EditorTextField {
+        return EditorTextField().apply {
+            setPlaceholder(FeedbackBundle.message("dialog.default.content.email.textarea.placeholder"))
+        }
     }
 
     protected abstract fun createFeedbackDialogPanel(): DialogPanel
