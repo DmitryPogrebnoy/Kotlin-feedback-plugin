@@ -1,26 +1,26 @@
 {
   "active_user_type": {
-    "question": "*Custom question for active user*",
+    "question": "Are there any features you'd like to have but did not find in the Kotlin plugin?",
     "text_field_settings": {
-      "placeholder": "Test placeholder"
+      "placeholder": "Please tell us about the features you need"
     }
   },
   "simple_user_type": {
-    "question": "*Custom questions for simple user*",
+    "question": "Are there any features you'd like to have but did not find in the Kotlin plugin?",
     "text_field_settings": {
-      "placeholder": "Test placeholder"
+      "placeholder": "Please tell us about the features you need"
     }
   },
   "beginner_user_type": {
-    "question": "*Custom questions for beginner user*",
+    "question": "Are there any features you'd like to have but did not find in the Kotlin plugin?",
     "text_field_settings": {
-      "placeholder": "Test placeholder"
+      "placeholder": "Please tell us about the features you need"
     }
   },
   "lost_user_type": {
-    "question": "*Custom question for lost user*",
+    "question": "Are there any features you'd like to have but did not find in the Kotlin plugin?",
     "text_field_settings": {
-      "placeholder": "Test placeholder"
+      "placeholder": "Please tell us about the features you need"
     }
   }
 }

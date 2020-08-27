@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>com.github.dmitrypogrebnoy.kotlinFeedbackPlugin</id>
+    <id>kotlinFeedbackPlugin</id>
     <name>Kotlin Feedback</name>
     <vendor>Dmitry Pogrebnoy</vendor>
 
@@ -14,52 +14,43 @@
     <extensions defaultExtensionNs="com.intellij">
         <statusBarWidgetFactory
                 id="Kotlin Feedback Widget"
-                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.widget.FeedbackStatusBarWidgetFactory"
+                implementation="kotlinFeedbackPlugin.ui.widget.FeedbackStatusBarWidgetFactory"
                 order="after inspectionProfileWidget"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.TasksStatisticService"/>
+                serviceImplementation="kotlinFeedbackPlugin.state.services.TasksStatisticService"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.EditingStatisticsService"/>
+                serviceImplementation="kotlinFeedbackPlugin.state.services.EditingStatisticsService"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.FeedbackDatesService"/>
+                serviceImplementation="kotlinFeedbackPlugin.state.services.FeedbackDatesService"/>
         <applicationService
-                serviceImplementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.state.services.ProjectsStatisticService"/>
+                serviceImplementation="kotlinFeedbackPlugin.state.services.ProjectsStatisticService"/>
         <compiler.task execute="AFTER"
-                       implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.FinishCompileTime"/>
+                       implementation="kotlinFeedbackPlugin.track.task.build.time.FinishCompileTime"/>
         <compiler.task execute="BEFORE"
-                       implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.task.build.time.StartCompileTime"/>
+                       implementation="kotlinFeedbackPlugin.track.task.build.time.StartCompileTime"/>
         <compiler.task execute="BEFORE"
-                       implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.CompileFeedbackNotification"/>
+                       implementation="kotlinFeedbackPlugin.show.CompileFeedbackNotification"/>
         <typedHandler
-                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.EditorTypingEventTracker"/>
+                implementation="kotlinFeedbackPlugin.track.active.EditorTypingEventTracker"/>
         <editorFactoryMouseListener
-                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.EditorMouseEventTracker"/>
+                implementation="kotlinFeedbackPlugin.track.active.EditorMouseEventTracker"/>
         <editorFactoryMouseMotionListener
-                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.active.EditorMouseEventTracker"/>
+                implementation="kotlinFeedbackPlugin.track.active.EditorMouseEventTracker"/>
         <notification.group groupId="Kotlin Feedback Notifications"/>
         <postStartupActivity
-                implementation="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.project.TrackOpenedProjectInfo"/>
+                implementation="kotlinFeedbackPlugin.track.project.TrackOpenedProjectInfo"/>
     </extensions>
 
     <project-components>
         <component>
             <implementation-class>
-                com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.ui.notification.KotlinFeedbackNotificationGroup
+                kotlinFeedbackPlugin.ui.notification.KotlinFeedbackNotificationGroup
             </implementation-class>
         </component>
     </project-components>
 
     <applicationListeners>
-        <listener class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.track.edit.EditFileListener"
+        <listener class="kotlinFeedbackPlugin.track.edit.EditFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
-
-    <actions>
-        <action id="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.StatisticPluginShow"
-                class="com.github.dmitrypogrebnoy.kotlinFeedbackPlugin.show.action.StatisticPluginShow"
-                text="StatisticPluginShow"
-                description="Shows statistics collected by the plugin">
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt E"/>
-        </action>
-    </actions>
 </idea-plugin>

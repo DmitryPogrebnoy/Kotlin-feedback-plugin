@@ -1,5 +1,6 @@
 {
   "enable_notification": false,
   "enable_widget_icon_color": true,
-  "enable_widget": true
+  "enable_widget": true,
+  "required_IDEA_EAP_version": true
 }
