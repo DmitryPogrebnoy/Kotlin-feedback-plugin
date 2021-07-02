@@ -53,4 +53,10 @@
         <listener class="kotlinFeedbackPlugin.track.edit.EditFileListener"
                   topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
     </applicationListeners>
+
+    <actions>
+        <action id="kotlinFeedbackPlugin.ui.notification.TestLaunchNotification"
+                class="kotlinFeedbackPlugin.ui.notification.TestLaunchNotification"
+                text="Launch Kotlin Feedback Notification"/>
+    </actions>
 </idea-plugin>

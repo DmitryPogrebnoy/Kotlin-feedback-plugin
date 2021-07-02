@@ -134,7 +134,7 @@ abstract class AttachedFileFeedbackDialog(project: Project) : AbstractFeedbackDi
         }
 
         return dialogPanel.apply {
-            ui = DarculaPanelUI()
+//            ui = DarculaPanelUI()
             font = UIManager.getFont("Label.font")
             preferredFocusedComponent = firstFeedbackQuestionTextArea
             preferredSize = Dimension(700, 550)
